@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Outstanding Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Party</th>
+        <th>Opening Balance</th>
+        <th>Invoices</th>
+        <th>Payments</th>
+        <th>Outstanding</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.party.name }}</td>
+        <td>{{ row.opening_balance }}</td>
+        <td>{{ row.invoice_total }}</td>
+        <td>{{ row.payment_total }}</td>
+        <td>{{ row.outstanding }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Production and Reporting Dashboard</h2>
+  <form method="get">
+    {{ form.as_p }}
+    <button type="submit">Apply Date Filter</button>
+  </form>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Daily Production Summary</h3>
+    <table>
+      <thead><tr><th>Date</th><th>Challans</th><th>Weight (kg)</th><th>Amount</th></tr></thead>
+      <tbody>
+      {% for row in daily_rows %}
+        <tr>
+          <td>{{ row.challan_date }}</td>
+          <td>{{ row.total_challans }}</td>
+          <td>{{ row.total_weight }}</td>
+          <td>{{ row.total_amount }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">No production rows for the selected range.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Monthly Invoice Summary</h3>
+    <table>
+      <thead><tr><th>Month</th><th>Total</th></tr></thead>
+      <tbody>
+      {% for row in monthly_rows %}
+        <tr><td>{{ row.month|date:"M Y" }}</td><td>{{ row.total_amount }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Top Parties</h3>
+    <table>
+      <thead><tr><th>Party</th><th>Invoice Total</th></tr></thead>
+      <tbody>
+      {% for row in top_party_rows %}
+        <tr><td>{{ row.party__name }}</td><td>{{ row.total_amount }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

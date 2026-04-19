@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Upload Import</h2>
+  <p class="muted">Use this recurring import module for parties, opening balances, invoices, payments, or challans.</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Preview Import</button>
+  </form>
+</div>
+
+{% if preview %}
+<div class="grid">
+  <div class="card">
+    <h3>Preview Summary</h3>
+    <p><strong>File:</strong> {{ preview.source_file_name }}</p>
+    <p><strong>Import type:</strong> {{ preview.import_type }}</p>
+    <p><strong>Valid rows:</strong> {{ preview.projected_totals.valid_row_count }}</p>
+    <p><strong>Errors:</strong> {{ preview.projected_totals.error_count }}</p>
+    <p><strong>Affected parties:</strong> {{ preview.projected_totals.affected_parties|join:", " }}</p>
+    <p><strong>Total amount:</strong> {{ preview.projected_totals.total_amount }}</p>
+    {% if preview.projected_totals.record_counts %}
+    <p><strong>Record breakdown:</strong></p>
+    <ul>
+      {% for record_type, count in preview.projected_totals.record_counts.items %}
+        <li>{{ record_type }}: {{ count }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post" action="{% url 'migration_app:confirm' %}">
+      {% csrf_token %}
+      {{ confirm_form.as_p }}
+      <button type="submit">Confirm Import</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Validation Errors</h3>
+    <table>
+      <thead><tr><th>Row</th><th>Sheet</th><th>Error</th></tr></thead>
+      <tbody>
+      {% for error in preview.errors %}
+        <tr><td>{{ error.row_number }}</td><td>{{ error.sheet_name }}</td><td>{{ error.error_message }}</td></tr>
+      {% empty %}
+        <tr><td colspan="3">No validation errors.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Valid Rows</h3>
+  <table>
+    <thead><tr><th>Row</th><th>Sheet</th><th>Normalized Data</th><th>Duplicate Warning</th></tr></thead>
+    <tbody>
+    {% for row in preview.valid_rows %}
+      <tr>
+        <td>{{ row.row_number }}</td>
+        <td>{{ row.sheet_name }}</td>
+        <td><pre>{{ row.normalized }}</pre></td>
+        <td>{{ row.duplicate_warning }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

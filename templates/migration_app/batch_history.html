@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Import History</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>File</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Rows</th>
+        <th>Success</th>
+        <th>Errors</th>
+        <th>Imported At</th>
+        <th>Download Errors</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for batch in batches %}
+      <tr>
+        <td>{{ batch.id }}</td>
+        <td>{{ batch.source_file_name }}</td>
+        <td>{{ batch.get_import_type_display }}</td>
+        <td>{{ batch.get_status_display }}</td>
+        <td>{{ batch.row_count }}</td>
+        <td>{{ batch.success_count }}</td>
+        <td>{{ batch.error_count }}</td>
+        <td>{{ batch.imported_at }}</td>
+        <td>
+          {% if batch.error_count %}
+            <a href="{% url 'migration_app:download-errors' batch.id %}">CSV</a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
