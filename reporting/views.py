@@ -8,6 +8,11 @@ from reporting.forms import DateRangeForm, LedgerFilterForm
 
 
 @staff_member_required
+def home_view(request):
+    return render(request, "reporting/home.html")
+
+
+@staff_member_required
 def party_ledger_view(request):
     form = LedgerFilterForm(request.GET or None)
     entries = []

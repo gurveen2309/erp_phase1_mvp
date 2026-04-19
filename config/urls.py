@@ -4,9 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from reporting import views as reporting_views
 
 
 urlpatterns = [
+    path("", reporting_views.home_view, name="home"),
     path("admin/", admin.site.urls),
     path("reports/", include("reporting.urls")),
     path("imports/", include("migration_app.urls")),

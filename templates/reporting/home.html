@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>ERP Home</h2>
+  <p class="muted">Use the links below to access the main operational pages.</p>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Admin</h3>
+    <p>Manage party masters, finance records, challans, and import batches.</p>
+    <p><a class="button" href="/admin/">Open Admin</a></p>
+  </div>
+
+  <div class="card">
+    <h3>Party Ledger</h3>
+    <p>Review date-wise debit, credit, and running balance for a selected party.</p>
+    <p><a class="button" href="/reports/ledger/">Open Ledger</a></p>
+  </div>
+
+  <div class="card">
+    <h3>Outstanding Summary</h3>
+    <p>View current opening balance, invoice total, payment total, and outstanding by party.</p>
+    <p><a class="button" href="/reports/outstanding/">Open Outstanding</a></p>
+  </div>
+
+  <div class="card">
+    <h3>Production Summary</h3>
+    <p>View daily production totals, monthly invoice summary, and top parties.</p>
+    <p><a class="button" href="/reports/production/">Open Production</a></p>
+  </div>
+
+  <div class="card">
+    <h3>Imports</h3>
+    <p>Preview and confirm recurring workbook imports, then review import history.</p>
+    <p><a class="button" href="/imports/">Open Imports</a></p>
+  </div>
+</div>
+{% endblock %}
