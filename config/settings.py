@@ -101,6 +101,9 @@ LOGIN_URL = "/admin/login/"
 
 ERP_DATE_FORMAT = os.getenv("ERP_DATE_FORMAT", "%d-%m-%Y")
 ERP_EXPORT_DATE_FORMAT = os.getenv("ERP_EXPORT_DATE_FORMAT", "%Y-%m-%d")
+ERP_COMPANY_NAME = os.getenv("ERP_COMPANY_NAME", "ERP Phase 1 MVP")
+ERP_COMPANY_ADDRESS = os.getenv("ERP_COMPANY_ADDRESS", "")
+ERP_COMPANY_GSTIN = os.getenv("ERP_COMPANY_GSTIN", "")
 BACKUP_ROOT = os.getenv("ERP_BACKUP_ROOT", str(BASE_DIR / "backups"))
 MAINTENANCE_MODE_FILE = os.getenv("ERP_MAINTENANCE_MODE_FILE", str(BASE_DIR / "maintenance.lock"))
 

@@ -69,6 +69,14 @@ Rollback is owner-only and removes imported rows tied to that batch in dependenc
 - Review pending finance and import requests
 - Approve or reject from the detail page
 
+## Party statement PDF
+
+- Open `/reports/ledger/`
+- Select the party and date range
+- Click `Load Ledger`
+- Click `Download PDF Statement`
+- The exported PDF uses the configured company header and the selected party/date range
+
 ## Audit log
 
 - Open `/governance/audit/`

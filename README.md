@@ -49,6 +49,7 @@ docker compose exec web python manage.py bootstrap_roles
 - Admin: `http://127.0.0.1:8000/admin/`
 - Reports: `http://127.0.0.1:8000/reports/ledger/`
 - Imports: `http://127.0.0.1:8000/imports/`
+- Party PDF statement download: open a party in `/reports/ledger/` and click `Download PDF Statement`
 
 8. To stop the stack:
 
@@ -63,6 +64,7 @@ docker compose down
 - You only need to run `docker compose exec web python manage.py migrate` again when model changes introduce new migrations.
 - Uploaded import files and PostgreSQL data remain available between restarts unless you remove the Docker volume.
 - Run `docker compose exec web python manage.py bootstrap_roles` after first setup so the default role groups are available in admin.
+- Statement PDF headers use `ERP_COMPANY_NAME`, `ERP_COMPANY_ADDRESS`, and `ERP_COMPANY_GSTIN` from `.env`.
 
 ## DBeaver connection
 
@@ -83,6 +85,7 @@ If `5432` is already used on your machine, change `POSTGRES_EXPOSE_PORT` in `.en
 
 - `/admin/`
 - `/reports/ledger/`
+- `/reports/ledger/pdf/?party=<party_id>`
 - `/reports/outstanding/`
 - `/reports/production/`
 - `/imports/`

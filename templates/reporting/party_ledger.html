@@ -12,6 +12,9 @@
 {% if selected_party %}
 <div class="card">
   <h3>{{ selected_party.name }}</h3>
+  <p>
+    <a class="button" href="{% url 'reporting:party-ledger-pdf' %}?{{ export_query }}">Download PDF Statement</a>
+  </p>
   <table>
     <thead>
       <tr>
