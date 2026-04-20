@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Backups</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Backup</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Available Snapshots</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Size</th>
+        <th>Path</th>
+        <th>Restore</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for snapshot in snapshots %}
+      <tr>
+        <td>{{ snapshot.id }}</td>
+        <td>{{ snapshot.get_backup_type_display }}</td>
+        <td>{{ snapshot.get_status_display }}</td>
+        <td>{{ snapshot.created_at }}</td>
+        <td>{{ snapshot.file_size }}</td>
+        <td>{{ snapshot.file_path }}</td>
+        <td>
+          {% if perms.governance.restore_db_backup %}
+            <a href="{% url 'governance:restore-backup' snapshot.id %}">Restore</a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7">No backups available.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

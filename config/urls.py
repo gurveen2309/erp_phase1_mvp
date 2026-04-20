@@ -12,6 +12,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("reports/", include("reporting.urls")),
     path("imports/", include("migration_app.urls")),
+    path("governance/", include("governance.urls")),
 ]
 
 if settings.DEBUG:

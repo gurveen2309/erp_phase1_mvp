@@ -15,6 +15,7 @@
         <th>Errors</th>
         <th>Imported At</th>
         <th>Download Errors</th>
+        <th>Rollback</th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +32,13 @@
         <td>
           {% if batch.error_count %}
             <a href="{% url 'migration_app:download-errors' batch.id %}">CSV</a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          {% if perms.governance.rollback_import_batch and batch.status == "imported" %}
+            <a href="{% url 'migration_app:rollback' batch.id %}">Rollback</a>
           {% else %}
             -
           {% endif %}

@@ -39,12 +39,18 @@ docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
-6. Open the app:
+6. Bootstrap the default roles:
+
+```bash
+docker compose exec web python manage.py bootstrap_roles
+```
+
+7. Open the app:
 - Admin: `http://127.0.0.1:8000/admin/`
 - Reports: `http://127.0.0.1:8000/reports/ledger/`
 - Imports: `http://127.0.0.1:8000/imports/`
 
-7. To stop the stack:
+8. To stop the stack:
 
 ```bash
 docker compose down
@@ -56,6 +62,7 @@ docker compose down
 - PostgreSQL is also exposed to your Mac on `localhost:${POSTGRES_EXPOSE_PORT}` for tools like DBeaver.
 - You only need to run `docker compose exec web python manage.py migrate` again when model changes introduce new migrations.
 - Uploaded import files and PostgreSQL data remain available between restarts unless you remove the Docker volume.
+- Run `docker compose exec web python manage.py bootstrap_roles` after first setup so the default role groups are available in admin.
 
 ## DBeaver connection
 
@@ -80,3 +87,6 @@ If `5432` is already used on your machine, change `POSTGRES_EXPOSE_PORT` in `.en
 - `/reports/production/`
 - `/imports/`
 - `/imports/history/`
+- `/governance/approvals/`
+- `/governance/audit/`
+- `/governance/backups/`

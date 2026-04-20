@@ -12,10 +12,30 @@ class MigrationRowErrorInline(admin.TabularInline):
 
 @admin.register(MigrationBatch)
 class MigrationBatchAdmin(admin.ModelAdmin):
-    list_display = ("source_file_name", "import_type", "status", "row_count", "success_count", "error_count", "uploaded_at", "imported_at")
+    list_display = (
+        "source_file_name",
+        "import_type",
+        "status",
+        "row_count",
+        "success_count",
+        "error_count",
+        "uploaded_at",
+        "imported_at",
+        "rolled_back_at",
+        "rolled_back_by",
+    )
     list_filter = ("status", "import_type", "file_type")
     search_fields = ("source_file_name",)
-    readonly_fields = ("uploaded_at", "imported_at", "row_count", "success_count", "error_count")
+    readonly_fields = (
+        "uploaded_at",
+        "imported_at",
+        "row_count",
+        "success_count",
+        "error_count",
+        "rolled_back_at",
+        "rolled_back_by",
+        "rollback_notes",
+    )
     inlines = [MigrationRowErrorInline]
 
 

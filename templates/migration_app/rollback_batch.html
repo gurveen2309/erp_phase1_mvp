@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Rollback Import Batch</h2>
+  <p><strong>Batch:</strong> {{ batch.id }} - {{ batch.source_file_name }}</p>
+  <p><strong>Status:</strong> {{ batch.get_status_display }}</p>
+  <p class="muted">This will remove imported rows tied to this batch in a safe dependency order and keep the batch history.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirm Rollback</button>
+  </form>
+</div>
+{% endblock %}

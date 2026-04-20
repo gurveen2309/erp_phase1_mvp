@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Approval Request #{{ approval_request.id }}</h2>
+  <p><strong>Action:</strong> {{ approval_request.get_action_type_display }}</p>
+  <p><strong>Status:</strong> {{ approval_request.get_status_display }}</p>
+  <p><strong>Submitted By:</strong> {{ approval_request.submitted_by|default:"-" }}</p>
+  <p><strong>Reason:</strong> {{ approval_request.reason|default:"-" }}</p>
+  <p><strong>Comments:</strong> {{ approval_request.comments|default:"-" }}</p>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Before</h3>
+    <pre>{{ approval_request.before_snapshot }}</pre>
+  </div>
+  <div class="card">
+    <h3>After</h3>
+    <pre>{{ approval_request.after_snapshot }}</pre>
+  </div>
+</div>
+
+{% if approval_request.status == "pending" %}
+<div class="card">
+  <h3>Decision</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="action" value="approve">Approve</button>
+    <button type="submit" name="action" value="reject" class="secondary">Reject</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "finance",
     "reporting",
     "migration_app",
+    "governance",
 ]
 
 MIDDLEWARE = [
@@ -36,6 +37,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "governance.middleware.MaintenanceModeMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -99,6 +101,8 @@ LOGIN_URL = "/admin/login/"
 
 ERP_DATE_FORMAT = os.getenv("ERP_DATE_FORMAT", "%d-%m-%Y")
 ERP_EXPORT_DATE_FORMAT = os.getenv("ERP_EXPORT_DATE_FORMAT", "%Y-%m-%d")
+BACKUP_ROOT = os.getenv("ERP_BACKUP_ROOT", str(BASE_DIR / "backups"))
+MAINTENANCE_MODE_FILE = os.getenv("ERP_MAINTENANCE_MODE_FILE", str(BASE_DIR / "maintenance.lock"))
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

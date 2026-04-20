@@ -6,9 +6,13 @@ import io
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
+from governance.forms import RollbackBatchForm
+from governance.models import ApprovalRequest
+from governance.services import create_approval_request, log_audit, rollback_import_batch
 from migration_app.forms import ConfirmImportForm, UploadImportForm
 from migration_app.models import MigrationBatch, MigrationMappingProfile
 from migration_app.services import build_preview, commit_preview, deserialize_preview, serialize_preview
@@ -72,11 +76,29 @@ def confirm_import_view(request):
         messages.error(request, "Import preview token mismatch. Please preview again.")
         return redirect("migration_app:upload")
 
-    batch = commit_preview(preview, base64.b64decode(stored_upload), request.user)
+    upload_bytes = base64.b64decode(stored_upload)
+    if request.user.is_superuser or request.user.has_perm("governance.approve_import_commit"):
+        batch = commit_preview(preview, upload_bytes, request.user)
+        log_audit(
+            "import.commit.executed",
+            actor=request.user,
+            migration_batch=batch,
+            after_snapshot={"batch_id": batch.id, "success_count": batch.success_count},
+        )
+        messages.success(request, f"Imported {batch.success_count} rows with {batch.error_count} validation errors retained.")
+    else:
+        create_approval_request(
+            action_type=ApprovalRequest.ActionType.IMPORT_COMMIT,
+            submitted_by=request.user,
+            model_class=MigrationBatch,
+            after_snapshot={"preview": serialize_preview(preview)},
+            upload_name=preview.source_file_name,
+            upload_bytes=upload_bytes,
+        )
+        messages.success(request, "Import commit submitted for approval.")
     request.session.pop(SESSION_KEY, None)
     request.session.pop(SESSION_UPLOAD, None)
-    messages.success(request, f"Imported {batch.success_count} rows with {batch.error_count} validation errors retained.")
-    return redirect("migration_app:history")
+    return redirect("governance:approval-queue" if not (request.user.is_superuser or request.user.has_perm("governance.approve_import_commit")) else "migration_app:history")
 
 
 @staff_member_required
@@ -86,6 +108,26 @@ def batch_history_view(request):
         "migration_app/batch_history.html",
         {
             "batches": MigrationBatch.objects.prefetch_related("row_errors").all(),
+        },
+    )
+
+
+@staff_member_required
+@permission_required("governance.rollback_import_batch", raise_exception=True)
+def rollback_batch_view(request, batch_id: int):
+    batch = get_object_or_404(MigrationBatch, pk=batch_id)
+    form = RollbackBatchForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        rollback_import_batch(batch, actor=request.user, notes=form.cleaned_data["notes"])
+        messages.success(request, "Import batch rolled back.")
+        return redirect("migration_app:history")
+
+    return render(
+        request,
+        "migration_app/rollback_batch.html",
+        {
+            "batch": batch,
+            "form": form,
         },
     )
 

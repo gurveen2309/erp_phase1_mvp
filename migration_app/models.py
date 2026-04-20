@@ -9,6 +9,7 @@ class MigrationBatch(models.Model):
         PREVIEW = "preview", "Preview"
         IMPORTED = "imported", "Imported"
         FAILED = "failed", "Failed"
+        ROLLED_BACK = "rolled_back", "Rolled Back"
 
     class FileType(models.TextChoices):
         XLSX = "xlsx", "XLSX"
@@ -32,6 +33,15 @@ class MigrationBatch(models.Model):
     row_count = models.PositiveIntegerField(default=0)
     success_count = models.PositiveIntegerField(default=0)
     error_count = models.PositiveIntegerField(default=0)
+    rolled_back_at = models.DateTimeField(null=True, blank=True)
+    rolled_back_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="rolled_back_migration_batches",
+    )
+    rollback_notes = models.TextField(blank=True)
     triggered_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,

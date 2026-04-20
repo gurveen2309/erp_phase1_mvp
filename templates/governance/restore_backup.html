@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Restore Backup</h2>
+  <p><strong>Snapshot:</strong> {{ snapshot.id }}</p>
+  <p><strong>Path:</strong> {{ snapshot.file_path }}</p>
+  <p class="muted">A pre-restore backup will be created automatically before restore starts. Writes will be blocked during restore.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirm Restore</button>
+  </form>
+</div>
+{% endblock %}
