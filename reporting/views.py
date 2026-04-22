@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from finance.models import Invoice
 from finance.services import monthly_invoice_summary, outstanding_summary, party_ledger, production_summary, top_parties
 from production.models import Challan
 from reporting.forms import DateRangeForm, LedgerFilterForm
-from reporting.pdf_exports import build_document_receipt_pdf, build_party_ledger_pdf
+from reporting.pdf_exports import (
+    build_document_receipt_pdf,
+    build_inspection_report_template_pdf,
+    build_party_ledger_pdf,
+    build_process_report_template_pdf,
+)
 
 
 @staff_member_required
@@ -98,6 +103,52 @@ def invoice_receipt_pdf_view(request, invoice_id: int):
     filename = invoice.receipt_code().replace("/", "-")
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
     response["Content-Disposition"] = f'attachment; filename="{filename}_receipt.pdf"'
+    return response
+
+
+@staff_member_required
+def invoice_process_template_pdf_view(request, invoice_id: int):
+    invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+    pdf_bytes = build_process_report_template_pdf(
+        invoice=invoice,
+        report_date=invoice.report_date,
+        part_name=invoice.part_name,
+    )
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{invoice.receipt_code()}_process_template.pdf"'
+    return response
+
+
+@staff_member_required
+def invoice_inspection_template_pdf_view(request, invoice_id: int):
+    invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+    pdf_bytes = build_inspection_report_template_pdf(
+        invoice=invoice,
+        report_date=invoice.report_date,
+        part_name=invoice.part_name,
+    )
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{invoice.receipt_code()}_inspection_template.pdf"'
+    return response
+
+
+@staff_member_required
+def invoice_process_uploaded_pdf_view(request, invoice_id: int):
+    invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+    if not invoice.process_report_pdf:
+        raise Http404("Process report PDF has not been uploaded.")
+    response = FileResponse(invoice.process_report_pdf.open("rb"), content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{invoice.receipt_code()}_process_report.pdf"'
+    return response
+
+
+@staff_member_required
+def invoice_inspection_uploaded_pdf_view(request, invoice_id: int):
+    invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+    if not invoice.inspection_report_pdf:
+        raise Http404("Inspection report PDF has not been uploaded.")
+    response = FileResponse(invoice.inspection_report_pdf.open("rb"), content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{invoice.receipt_code()}_inspection_report.pdf"'
     return response
 
 

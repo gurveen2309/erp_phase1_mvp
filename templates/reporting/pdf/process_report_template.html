@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 12mm 14mm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #111;
+      margin: 0;
+    }
+    .page {
+      width: 100%;
+    }
+    .header-box,
+    .info-table,
+    .cycle-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .header-box,
+    .info-table,
+    .cycle-table,
+    .signature-table {
+      margin-bottom: 12px;
+    }
+    .header-box td,
+    .info-table td,
+    .cycle-table th,
+    .cycle-table td {
+      border: 1px solid #111;
+      padding: 6px 7px;
+      vertical-align: middle;
+    }
+    .brand {
+      text-align: center;
+      padding: 8px 12px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.05;
+      letter-spacing: 0.4px;
+    }
+    .brand .subline {
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .brand .address {
+      margin-top: 6px;
+      font-size: 10px;
+      line-height: 1.35;
+    }
+    .report-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 6px 0 2px;
+    }
+    .report-subtitle {
+      text-align: center;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+    .ref-row {
+      display: table;
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+    .ref-row div {
+      display: table-cell;
+      width: 50%;
+    }
+    .ref-row .right {
+      text-align: right;
+    }
+    .label {
+      font-weight: 700;
+      white-space: nowrap;
+      width: 18%;
+    }
+    .value {
+      width: 32%;
+    }
+    .section-heading {
+      text-align: center;
+      font-weight: 700;
+      margin: 14px 0 6px;
+      font-size: 13px;
+    }
+    .cycle-table th {
+      font-weight: 700;
+      text-align: center;
+    }
+    .cycle-table .blank-row td {
+      height: 54px;
+    }
+    .signature-table {
+      width: 100%;
+      margin-top: 24px;
+      border-collapse: collapse;
+    }
+    .signature-table td {
+      width: 50%;
+      vertical-align: top;
+      padding-top: 20px;
+      font-weight: 700;
+    }
+    .sig-line {
+      margin-top: 28px;
+      border-top: 1px solid #111;
+      width: 72%;
+    }
+    .footer {
+      margin-top: 14px;
+      border-top: 1px solid #111;
+      padding-top: 6px;
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <table class="header-box">
+      <tr>
+        <td class="brand">
+          <h1>{{ company_name }}</h1>
+          {% if company_address_lines %}
+            <div class="address">
+              {% for line in company_address_lines %}
+                <div>{{ line }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if company_gstin %}
+            <div class="subline">GSTIN: {{ company_gstin }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <div class="report-title">{{ title }}</div>
+    <div class="report-subtitle">{{ subtitle }}</div>
+
+    <div class="ref-row">
+      <div><strong>Ref. No.:</strong> {{ report_no }}</div>
+      <div class="right"><strong>Dated:</strong> {{ report_date }}</div>
+    </div>
+
+    <table class="info-table">
+      <tr>
+        <td class="label">Date</td>
+        <td class="value">{{ report_date }}</td>
+        <td class="label">Customer Name</td>
+        <td class="value">{{ customer_name }}</td>
+      </tr>
+      <tr>
+        <td class="label">Part Name/No.</td>
+        <td class="value">{{ part_name }}</td>
+        <td class="label">Hardness</td>
+        <td class="value"></td>
+      </tr>
+      <tr>
+        <td class="label">Sample ID No.</td>
+        <td class="value"></td>
+        <td class="label">Material Grade</td>
+        <td class="value"></td>
+      </tr>
+    </table>
+
+    <div class="section-heading">Heat Treatment Cycle Material Grade</div>
+    <div class="section-heading" style="margin-top:0;">Continuous Furnace</div>
+
+    <table class="cycle-table">
+      <tr>
+        <th rowspan="2">Size</th>
+        <th colspan="3">Hardening Process</th>
+        <th rowspan="2">Quenching Media</th>
+        <th rowspan="2">Quenching Temp.</th>
+        <th colspan="3">Tempering Process</th>
+      </tr>
+      <tr>
+        <th>Hardening Temp.</th>
+        <th>Speed Mesh Belt</th>
+        <th>Hardening HRC</th>
+        <th>Tempering Temp.</th>
+        <th>Speed Mesh Belt</th>
+        <th>Tempering HRC</th>
+      </tr>
+      <tr class="blank-row">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+
+    <table class="signature-table">
+      <tr>
+        <td>
+          Checked By
+          <div class="sig-line"></div>
+        </td>
+        <td style="text-align:right;">
+          <span style="display:inline-block; text-align:left;">
+            Approved By
+            <div class="sig-line"></div>
+          </span>
+        </td>
+      </tr>
+    </table>
+
+    <div class="footer">
+      {% for line in company_address_lines %}
+        <div>{{ line }}</div>
+      {% endfor %}
+      {% if company_gstin %}
+        <div>GSTIN: {{ company_gstin }}</div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

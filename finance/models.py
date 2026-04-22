@@ -51,6 +51,10 @@ class Invoice(ImportedModelMixin):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     remarks = models.TextField(blank=True)
     receipt_generated_at = models.DateTimeField(null=True, blank=True)
+    report_date = models.DateField(null=True, blank=True)
+    part_name = models.CharField(max_length=255, blank=True)
+    process_report_pdf = models.FileField(upload_to="invoice_reports/process/%Y/%m/%d/", null=True, blank=True)
+    inspection_report_pdf = models.FileField(upload_to="invoice_reports/inspection/%Y/%m/%d/", null=True, blank=True)
 
     class Meta:
         ordering = ["invoice_date", "id"]

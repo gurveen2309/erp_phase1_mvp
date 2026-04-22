@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 12mm 14mm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #111;
+      margin: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .top-table,
+    .meta-table,
+    .inspection-table,
+    .bottom-table {
+      margin-bottom: 10px;
+    }
+    .top-table td,
+    .meta-table td,
+    .inspection-table th,
+    .inspection-table td,
+    .bottom-table td {
+      border: 1px solid #111;
+      padding: 6px 7px;
+      vertical-align: middle;
+    }
+    .brand-left {
+      width: 20%;
+      text-align: center;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .brand-center {
+      width: 45%;
+      text-align: center;
+      padding: 8px 10px;
+    }
+    .brand-center h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.05;
+    }
+    .brand-center .address {
+      margin-top: 6px;
+      font-size: 10px;
+      line-height: 1.35;
+    }
+    .brand-right {
+      width: 35%;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .meta-table .cell {
+      font-weight: 700;
+    }
+    .meta-table .value {
+      font-weight: 400;
+    }
+    .inspection-table th {
+      text-align: center;
+      font-weight: 700;
+    }
+    .inspection-table td {
+      height: 32px;
+    }
+    .param-col { width: 22%; }
+    .spec-col { width: 14%; }
+    .obs-col { width: 6.4%; }
+    .bottom-table td {
+      height: 34px;
+    }
+    .foot-signatures {
+      width: 100%;
+      margin-top: 18px;
+      border-collapse: collapse;
+    }
+    .foot-signatures td {
+      width: 50%;
+      border: none;
+      padding-top: 20px;
+      font-weight: 700;
+      vertical-align: top;
+    }
+    .sig-line {
+      margin-top: 26px;
+      border-top: 1px solid #111;
+      width: 74%;
+    }
+  </style>
+</head>
+<body>
+  <table class="top-table">
+    <tr>
+      <td class="brand-left">{{ company_name }}</td>
+      <td class="brand-center">
+        <h1>{{ company_name }}</h1>
+        {% if company_address_lines %}
+          <div class="address">
+            {% for line in company_address_lines %}
+              <div>{{ line }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% if company_gstin %}
+          <div class="address">GSTIN: {{ company_gstin }}</div>
+        {% endif %}
+      </td>
+      <td class="brand-right">{{ title }}<br>{{ subtitle }}</td>
+    </tr>
+  </table>
+
+  <table class="meta-table">
+    <tr>
+      <td class="cell">DATE: <span class="value">{{ report_date }}</span></td>
+      <td class="cell">PART NAME: <span class="value">{{ part_name }}</span></td>
+      <td class="cell">CUSTOMER: <span class="value">{{ customer_name }}</span></td>
+      <td class="cell">NO: <span class="value">{{ report_no }}</span></td>
+    </tr>
+    <tr>
+      <td class="cell">LOT QTY:</td>
+      <td class="cell">MATERIAL GRADE:</td>
+      <td class="cell" colspan="2">SUPPLIER TC RECEIVED OR NOT:</td>
+    </tr>
+    <tr>
+      <td class="cell" colspan="3">PROCESS DONE:</td>
+      <td class="cell">H/T</td>
+    </tr>
+  </table>
+
+  <table class="inspection-table">
+    <tr>
+      <th rowspan="2">S No.</th>
+      <th rowspan="2" class="param-col">PARAMETERS</th>
+      <th rowspan="2" class="spec-col">SPECIFICATIONS</th>
+      <th colspan="8">OBSERVATION</th>
+    </tr>
+    <tr>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+      <th class="obs-col"></th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><strong>Hardness (Surface)</strong></td>
+      <td style="text-align:center;"></td>
+      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Micro-Structure</strong></td>
+      <td></td>
+      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>Grain Size</strong></td>
+      <td></td>
+      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>Tensile Strength (MPa)</strong></td>
+      <td></td>
+      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>Any Other Requirements</strong></td>
+      <td></td>
+      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+  </table>
+
+  <table class="bottom-table">
+    <tr>
+      <td style="width:70%;">CHECKED MATERIAL AFTER H/T HARDNESS OK.</td>
+      <td style="width:30%;"><strong>Qty. Checked:</strong></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><strong>Qty.:</strong></td>
+    </tr>
+  </table>
+
+  <table class="foot-signatures">
+    <tr>
+      <td>
+        Checked By
+        <div class="sig-line"></div>
+      </td>
+      <td style="text-align:right;">
+        <span style="display:inline-block; text-align:left;">
+          Authorized By
+          <div class="sig-line"></div>
+        </span>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
