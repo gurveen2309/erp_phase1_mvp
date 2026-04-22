@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, A6
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 
@@ -28,6 +28,10 @@ def _format_statement_date(value: date | None) -> str:
 
 def _format_period_date(value: date | None) -> str:
     return value.strftime("%d/%m/%Y") if value else ""
+
+
+def _format_datetime(value) -> str:
+    return value.strftime("%d/%m/%Y %H:%M") if value else ""
 
 
 def _format_amount(value: Decimal) -> str:
@@ -77,6 +81,32 @@ def _draw_header(pdf: canvas.Canvas, party: Party, start_date: date | None, end_
     title = f"{party.name} FROM {_format_period_date(start_date)} TO {_format_period_date(end_date)}".strip()
     pdf.drawString(LEFT_MARGIN, y, title)
     return y - 6 * mm
+
+
+def _receipt_header(pdf: canvas.Canvas, page_width: float, top_y: float) -> float:
+    company_name = settings.ERP_COMPANY_NAME
+    company_address = settings.ERP_COMPANY_ADDRESS
+    company_gstin = settings.ERP_COMPANY_GSTIN
+
+    y = top_y
+    pdf.setFont("Helvetica-Bold", 11)
+    pdf.drawString(10 * mm, y, company_name)
+    y -= 5 * mm
+
+    if company_address:
+        pdf.setFont("Helvetica", 8)
+        for line in [line.strip() for line in company_address.splitlines() if line.strip()]:
+            pdf.drawString(10 * mm, y, line)
+            y -= 4 * mm
+
+    if company_gstin:
+        pdf.setFont("Helvetica", 8)
+        pdf.drawString(10 * mm, y, f"GSTIN: {company_gstin}")
+        y -= 5 * mm
+
+    pdf.setStrokeColor(colors.black)
+    pdf.line(10 * mm, y, page_width - 10 * mm, y)
+    return y - 5 * mm
 
 
 def _draw_table_header(pdf: canvas.Canvas, y: float) -> float:
@@ -158,5 +188,55 @@ def build_party_ledger_pdf(*, party: Party, entries: list[LedgerEntry], start_da
 
     y = _draw_totals(pdf, y, entries)
     _draw_footer(pdf)
+    pdf.save()
+    return buffer.getvalue()
+
+
+def build_document_receipt_pdf(
+    *,
+    document_type: str,
+    receipt_code: str,
+    party_name: str,
+    document_number: str,
+    document_date: date,
+    amount: Decimal,
+    receipt_generated_at,
+    weight_kg: Decimal | None = None,
+) -> bytes:
+    page_width, page_height = A6
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A6)
+    pdf.setTitle(f"{receipt_code} {document_type} Receipt")
+
+    y = _receipt_header(pdf, page_width, page_height - 10 * mm)
+    pdf.setFont("Helvetica-Bold", 10)
+    pdf.drawString(10 * mm, y, f"{document_type} RECEIPT")
+    y -= 6 * mm
+
+    rows = [
+        ("Receipt ID", receipt_code),
+        ("Party", party_name),
+        ("Number", document_number or "-"),
+        ("Date", _format_period_date(document_date)),
+        ("Amount", f"{amount:.2f}"),
+    ]
+    if weight_kg is not None:
+        rows.append(("Weight (kg)", f"{weight_kg:.2f}"))
+    rows.append(("Generated", _format_datetime(receipt_generated_at)))
+
+    label_x = 10 * mm
+    value_x = 42 * mm
+    pdf.setFont("Helvetica", 8.5)
+    for label, value in rows:
+        pdf.setFillColor(colors.black)
+        pdf.drawString(label_x, y, f"{label}:")
+        pdf.drawString(value_x, y, str(value))
+        y -= 5.5 * mm
+
+    pdf.line(10 * mm, y, page_width - 10 * mm, y)
+    y -= 5 * mm
+    pdf.setFont("Helvetica", 7.5)
+    pdf.drawString(10 * mm, y, "Attach this slip to the physical document for ERP reference.")
+
     pdf.save()
     return buffer.getvalue()

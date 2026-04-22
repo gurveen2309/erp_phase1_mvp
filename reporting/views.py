@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
+from finance.models import Invoice
 from finance.services import monthly_invoice_summary, outstanding_summary, party_ledger, production_summary, top_parties
+from production.models import Challan
 from reporting.forms import DateRangeForm, LedgerFilterForm
-from reporting.pdf_exports import build_party_ledger_pdf
+from reporting.pdf_exports import build_document_receipt_pdf, build_party_ledger_pdf
 
 
 @staff_member_required
@@ -59,6 +61,43 @@ def party_ledger_pdf_view(request):
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
     safe_name = selected_party.name.replace("/", "-").replace(" ", "_")
     response["Content-Disposition"] = f'attachment; filename="{safe_name}_ledger_statement.pdf"'
+    return response
+
+
+@staff_member_required
+def challan_receipt_pdf_view(request, challan_id: int):
+    challan = get_object_or_404(Challan.objects.select_related("party"), pk=challan_id)
+    pdf_bytes = build_document_receipt_pdf(
+        document_type="Challan",
+        receipt_code=challan.receipt_code(),
+        party_name=challan.party.name,
+        document_number=challan.challan_number,
+        document_date=challan.challan_date,
+        amount=challan.amount,
+        receipt_generated_at=challan.receipt_generated_at,
+        weight_kg=challan.weight_kg,
+    )
+    filename = challan.receipt_code().replace("/", "-")
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}_receipt.pdf"'
+    return response
+
+
+@staff_member_required
+def invoice_receipt_pdf_view(request, invoice_id: int):
+    invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+    pdf_bytes = build_document_receipt_pdf(
+        document_type="Invoice",
+        receipt_code=invoice.receipt_code(),
+        party_name=invoice.party.name,
+        document_number=invoice.invoice_number,
+        document_date=invoice.invoice_date,
+        amount=invoice.amount,
+        receipt_generated_at=invoice.receipt_generated_at,
+    )
+    filename = invoice.receipt_code().replace("/", "-")
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}_receipt.pdf"'
     return response
 
 

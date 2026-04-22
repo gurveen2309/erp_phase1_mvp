@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from finance.models import Invoice, OpeningBalance, Payment
 from governance.admin_mixins import FinanceApprovalAdminMixin
+from reporting.admin_mixins import ReceiptAdminMixin
 
 
 @admin.register(OpeningBalance)
@@ -13,10 +14,11 @@ class OpeningBalanceAdmin(FinanceApprovalAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Invoice)
-class InvoiceAdmin(FinanceApprovalAdminMixin, admin.ModelAdmin):
-    list_display = ("invoice_date", "invoice_number", "party", "amount")
+class InvoiceAdmin(ReceiptAdminMixin, FinanceApprovalAdminMixin, admin.ModelAdmin):
+    receipt_url_name = "reporting:invoice-receipt-pdf"
+    list_display = ("invoice_date", "invoice_number", "receipt_code_display", "party", "amount")
     list_filter = ("invoice_date",)
-    search_fields = ("invoice_number", "party__name", "remarks")
+    search_fields = ("invoice_number", "=id", "party__name", "remarks")
     autocomplete_fields = ("party",)
 
 

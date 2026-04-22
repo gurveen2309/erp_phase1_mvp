@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import os
 import subprocess
+from datetime import date, datetime, time
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -18,12 +20,24 @@ from governance.models import ApprovalRequest, AuditEvent, BackupSnapshot
 SNAPSHOT_EXCLUDE_FIELDS = {"id", "created_at", "updated_at"}
 
 
+def _json_safe(value: Any):
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, (date, datetime, time)):
+        return value.isoformat()
+    if isinstance(value, Decimal):
+        return str(value)
+    return value
+
+
 def serialize_instance(instance) -> dict[str, Any]:
     snapshot: dict[str, Any] = {}
     for field in instance._meta.concrete_fields:
         if field.name in SNAPSHOT_EXCLUDE_FIELDS:
             continue
-        snapshot[field.name] = getattr(instance, field.attname)
+        snapshot[field.name] = _json_safe(getattr(instance, field.attname))
     return snapshot
 
 
@@ -66,9 +80,9 @@ def log_audit(
         actor=actor if getattr(actor, "is_authenticated", False) else None,
         approval_request=approval_request,
         migration_batch=migration_batch,
-        before_snapshot=before_snapshot or {},
-        after_snapshot=after_snapshot or {},
-        metadata=metadata or {},
+        before_snapshot=_json_safe(before_snapshot or {}),
+        after_snapshot=_json_safe(after_snapshot or {}),
+        metadata=_json_safe(metadata or {}),
         content_type=content_type,
         object_id=object_id,
         object_repr=object_repr,
@@ -94,9 +108,9 @@ def create_approval_request(
         object_id=object_id,
         action_type=action_type,
         submitted_by=submitted_by if getattr(submitted_by, "is_authenticated", False) else None,
-        before_snapshot=before_snapshot or {},
-        after_snapshot=after_snapshot or {},
-        metadata=metadata or {},
+        before_snapshot=_json_safe(before_snapshot or {}),
+        after_snapshot=_json_safe(after_snapshot or {}),
+        metadata=_json_safe(metadata or {}),
         reason=reason,
         comments=comments,
     )

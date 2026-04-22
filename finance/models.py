@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.db import models
+from django.utils import timezone
 
 
 class ImportedModelMixin(models.Model):
@@ -49,6 +50,7 @@ class Invoice(ImportedModelMixin):
     invoice_date = models.DateField()
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     remarks = models.TextField(blank=True)
+    receipt_generated_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["invoice_date", "id"]
@@ -57,11 +59,22 @@ class Invoice(ImportedModelMixin):
                 fields=["party", "invoice_number"],
                 condition=~models.Q(invoice_number=""),
                 name="uniq_party_invoice_number",
-            )
+            ),
         ]
 
     def __str__(self) -> str:
         return self.invoice_number or f"Invoice {self.pk}"
+
+    def receipt_code(self) -> str:
+        return f"INV-{self.pk}" if self.pk else ""
+
+    receipt_code.short_description = "Receipt Code"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.receipt_generated_at:
+            self.receipt_generated_at = self.receipt_generated_at or timezone.now()
+            super().save(update_fields=["receipt_generated_at"])
 
 
 class Payment(ImportedModelMixin):

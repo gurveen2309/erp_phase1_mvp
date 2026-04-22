@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.db import models
+from django.utils import timezone
 
 
 class Challan(models.Model):
@@ -17,6 +18,7 @@ class Challan(models.Model):
     weight_kg = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     remarks = models.TextField(blank=True)
+    receipt_generated_at = models.DateTimeField(null=True, blank=True)
     source_batch = models.ForeignKey(
         "migration_app.MigrationBatch",
         null=True,
@@ -35,8 +37,19 @@ class Challan(models.Model):
                 fields=["party", "challan_number"],
                 condition=~models.Q(challan_number=""),
                 name="uniq_party_challan_number",
-            )
+            ),
         ]
 
     def __str__(self) -> str:
         return self.challan_number or f"Challan {self.pk}"
+
+    def receipt_code(self) -> str:
+        return f"CH-{self.pk}" if self.pk else ""
+
+    receipt_code.short_description = "Receipt Code"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.receipt_generated_at:
+            self.receipt_generated_at = self.receipt_generated_at or timezone.now()
+            super().save(update_fields=["receipt_generated_at"])
