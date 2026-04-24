@@ -39,21 +39,10 @@ class InvoiceAdmin(ReceiptAdminMixin, admin.ModelAdmin):
             },
         ),
         (
-            "Report Details",
-            {
-                "fields": (
-                    "report_date",
-                    "part_name",
-                )
-            },
-        ),
-        (
             "Process Report",
             {
                 "fields": (
-                    "process_report_reference",
                     "process_report_pdf",
-                    "process_report_template_link",
                     "process_report_uploaded_link",
                 )
             },
@@ -62,9 +51,7 @@ class InvoiceAdmin(ReceiptAdminMixin, admin.ModelAdmin):
             "Inspection Report",
             {
                 "fields": (
-                    "inspection_report_reference",
                     "inspection_report_pdf",
-                    "inspection_report_template_link",
                     "inspection_report_uploaded_link",
                 )
             },
@@ -75,30 +62,11 @@ class InvoiceAdmin(ReceiptAdminMixin, admin.ModelAdmin):
         readonly_fields = list(super().get_readonly_fields(request, obj))
         readonly_fields.extend(
             [
-                "process_report_reference",
-                "process_report_template_link",
                 "process_report_uploaded_link",
-                "inspection_report_reference",
-                "inspection_report_template_link",
                 "inspection_report_uploaded_link",
             ]
         )
         return readonly_fields
-
-    def process_report_reference(self, obj):
-        return obj.receipt_code() if obj and obj.pk else "-"
-
-    process_report_reference.short_description = "Report Number"
-
-    def process_report_template_link(self, obj):
-        if not obj or not obj.pk:
-            return "Save the invoice first."
-        return format_html(
-            '<a href="{}" target="_blank">Download Process Report Template</a>',
-            reverse("reporting:invoice-process-template-pdf", args=[obj.pk]),
-        )
-
-    process_report_template_link.short_description = "Template PDF"
 
     def process_report_uploaded_link(self, obj):
         if not obj or not obj.pk or not obj.process_report_pdf:
@@ -109,21 +77,6 @@ class InvoiceAdmin(ReceiptAdminMixin, admin.ModelAdmin):
         )
 
     process_report_uploaded_link.short_description = "Uploaded PDF"
-
-    def inspection_report_reference(self, obj):
-        return obj.receipt_code() if obj and obj.pk else "-"
-
-    inspection_report_reference.short_description = "Report Number"
-
-    def inspection_report_template_link(self, obj):
-        if not obj or not obj.pk:
-            return "Save the invoice first."
-        return format_html(
-            '<a href="{}" target="_blank">Download Inspection Report Template</a>',
-            reverse("reporting:invoice-inspection-template-pdf", args=[obj.pk]),
-        )
-
-    inspection_report_template_link.short_description = "Template PDF"
 
     def inspection_report_uploaded_link(self, obj):
         if not obj or not obj.pk or not obj.inspection_report_pdf:

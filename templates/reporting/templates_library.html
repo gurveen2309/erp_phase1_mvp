@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Blank Templates</h2>
+  <p class="muted">Download the current blank process and inspection forms as PDFs. These are generic system templates and are no longer tied to any invoice.</p>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Process Report Template</h3>
+    <p>Blank heat treatment process template for printing and manual completion.</p>
+    <p><a class="button" href="/reports/templates/process.pdf">Download Process Template</a></p>
+  </div>
+
+  <div class="card">
+    <h3>Inspection Report Template</h3>
+    <p>Blank heat treatment inspection template for printing and manual completion.</p>
+    <p><a class="button" href="/reports/templates/inspection.pdf">Download Inspection Template</a></p>
+  </div>
+</div>
+{% endblock %}
