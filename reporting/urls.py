@@ -9,7 +9,6 @@ urlpatterns = [
     path("", views.home_view, name="home"),
     path("templates/", views.blank_templates_view, name="blank-templates"),
     path("templates/process/", views.process_report_form_view, name="process-report-form"),
-    path("templates/inspection/", views.inspection_report_form_view, name="inspection-report-form"),
     path("history/", views.report_history_view, name="report-history"),
     path("templates/process.pdf", views.blank_process_template_pdf_view, name="blank-process-template-pdf"),
     path("templates/inspection.pdf", views.blank_inspection_template_pdf_view, name="blank-inspection-template-pdf"),

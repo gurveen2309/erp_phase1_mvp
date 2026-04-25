@@ -6,18 +6,19 @@ test.describe("Templates Library", () => {
     await login(page);
   });
 
-  test("shows Fill & Download links for both reports", async ({ page }) => {
+  test("shows combined Fill & Download tile and both blank PDF links", async ({ page }) => {
     await page.goto("/reports/templates/");
     await expect(page.getByRole("heading", { name: "Report Templates" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Fill & Download" })).toHaveCount(2);
-    await expect(page.getByRole("link", { name: "Blank PDF" })).toHaveCount(2);
+    await expect(page.getByRole("link", { name: "Fill & Download" })).toHaveCount(1);
+    await expect(page.getByRole("link", { name: "Blank Process PDF" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Blank Inspection PDF" })).toBeVisible();
   });
 
   test("blank process PDF link returns a PDF", async ({ page }) => {
     await page.goto("/reports/templates/");
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      page.getByRole("link", { name: "Blank PDF" }).first().click(),
+      page.getByRole("link", { name: "Blank Process PDF" }).click(),
     ]);
     expect(download.suggestedFilename()).toMatch(/\.pdf$/);
   });
@@ -26,7 +27,7 @@ test.describe("Templates Library", () => {
     await page.goto("/reports/templates/");
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      page.getByRole("link", { name: "Blank PDF" }).nth(1).click(),
+      page.getByRole("link", { name: "Blank Inspection PDF" }).click(),
     ]);
     expect(download.suggestedFilename()).toMatch(/\.pdf$/);
   });

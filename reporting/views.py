@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import zipfile
+from io import BytesIO
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.files.base import ContentFile
 from django.http import FileResponse, Http404, HttpResponse
@@ -9,7 +12,13 @@ from django.utils import timezone
 from finance.models import Invoice
 from finance.services import monthly_invoice_summary, outstanding_summary, party_ledger, production_summary, top_parties
 from production.models import Challan, InspectionReport, ProcessReport
-from reporting.forms import DateRangeForm, InspectionReportForm, LedgerFilterForm, ProcessReportForm
+from reporting.forms import (
+    INSPECTION_REPORT_FIELDS,
+    PROCESS_REPORT_FIELDS,
+    DateRangeForm,
+    LedgerFilterForm,
+    ReportForm,
+)
 from reporting.pdf_exports import (
     build_blank_inspection_template_pdf,
     build_blank_process_template_pdf,
@@ -45,95 +54,56 @@ def blank_inspection_template_pdf_view(request):
 
 
 def _save_report_pdf(report, pdf_bytes: bytes, prefix: str) -> str:
-    print("Saving report PDF...")
     report.save()
     filename = f"{prefix}_{report.party_id}_{timezone.now():%Y%m%d_%H%M%S}.pdf"
-    print("Saving report PDF with filename:", filename)
     report.pdf.save(filename, ContentFile(pdf_bytes), save=True)
-    report.refresh_from_db()
-    print("Report saved with PDF:", report.pdf.name)
     return report.pdf.name
 
 
 @staff_member_required
 def process_report_form_view(request):
-    initial = {}
-    invoice_id = request.GET.get("invoice_id")
-    if invoice_id:
-        invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
-        initial["party"] = invoice.party_id
-        initial["invoice"] = invoice.pk
-
     if request.method == "POST":
-        form = ProcessReportForm(request.POST)
+        form = ReportForm(request.POST)
         if form.is_valid():
             data = dict(form.cleaned_data)
             party = data.pop("party")
-            invoice = data.pop("invoice", None)
 
-            pdf_ctx = {**data, "customer_name": party.name}
-            pdf_bytes = build_blank_process_template_pdf(extra_context=pdf_ctx)
+            process_data = {k: data[k] for k in PROCESS_REPORT_FIELDS if k in data}
+            inspection_data = {k: data[k] for k in INSPECTION_REPORT_FIELDS if k in data}
 
-            report = ProcessReport(
-                party=party,
-                invoice=invoice,
-                generated_by=request.user,
-                **data,
+            process_pdf = build_blank_process_template_pdf(
+                extra_context={**process_data, "customer_name": party.name}
             )
-            print("*"*100)
-            print("Report data:", data)
-            print("Report:", report)
-            print("PDF BYTES:", pdf_bytes)
-            filename = _save_report_pdf(report, pdf_bytes, "process")
-            print("Saved report PDF with filename:", filename)
-            if invoice:
-                invoice.process_report_pdf.save(filename, ContentFile(pdf_bytes), save=True)
+            inspection_pdf = build_blank_inspection_template_pdf(
+                extra_context={**inspection_data, "customer": party.name}
+            )
 
-            response = HttpResponse(pdf_bytes, content_type="application/pdf")
-            response["Content-Disposition"] = 'attachment; filename="process_report.pdf"'
+            inspection = InspectionReport(
+                party=party,
+                generated_by=request.user,
+                **inspection_data,
+            )
+            _save_report_pdf(inspection, inspection_pdf, "inspection")
+
+            process = ProcessReport(
+                party=party,
+                generated_by=request.user,
+                inspection_report=inspection,
+                **process_data,
+            )
+            _save_report_pdf(process, process_pdf, "process")
+
+            buf = BytesIO()
+            with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+                zf.writestr("process_report.pdf", process_pdf)
+                zf.writestr("inspection_report.pdf", inspection_pdf)
+            response = HttpResponse(buf.getvalue(), content_type="application/zip")
+            response["Content-Disposition"] = 'attachment; filename="reports.zip"'
             return response
     else:
-        form = ProcessReportForm(initial=initial)
+        form = ReportForm()
 
     return render(request, "reporting/process_report_form.html", {"form": form})
-
-
-@staff_member_required
-def inspection_report_form_view(request):
-    initial = {}
-    invoice_id = request.GET.get("invoice_id")
-    if invoice_id:
-        invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
-        initial["party"] = invoice.party_id
-        initial["invoice"] = invoice.pk
-
-    if request.method == "POST":
-        form = InspectionReportForm(request.POST)
-        if form.is_valid():
-            data = dict(form.cleaned_data)
-            party = data.pop("party")
-            invoice = data.pop("invoice", None)
-
-            pdf_ctx = {**data, "customer": party.name}
-            pdf_bytes = build_blank_inspection_template_pdf(extra_context=pdf_ctx)
-
-            report = InspectionReport(
-                party=party,
-                invoice=invoice,
-                generated_by=request.user,
-                **data,
-            )
-            filename = _save_report_pdf(report, pdf_bytes, "inspection")
-            if invoice:
-                invoice.inspection_report_pdf.save(filename, ContentFile(pdf_bytes), save=True)
-
-            response = HttpResponse(pdf_bytes, content_type="application/pdf")
-            response["Content-Disposition"] = 'attachment; filename="inspection_report.pdf"'
-            return response
-    else:
-        form = InspectionReportForm(initial=initial)
-
-    return render(request, "reporting/inspection_report_form.html", {"form": form})
 
 
 @staff_member_required
