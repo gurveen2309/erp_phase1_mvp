@@ -152,28 +152,28 @@
     <div class="report-subtitle">Heat Treatment Template</div>
 
     <div class="ref-row">
-      <div><strong>Ref. No.:</strong></div>
-      <div class="right"><strong>Dated:</strong></div>
+      <div><strong>Ref. No.:</strong> {{ ref_no }}</div>
+      <div class="right"><strong>Dated:</strong> {{ dated }}</div>
     </div>
 
     <table class="info-table">
       <tr>
         <td class="label">Date</td>
-        <td class="value"></td>
+        <td class="value">{{ date }}</td>
         <td class="label">Customer Name</td>
-        <td class="value"></td>
+        <td class="value">{{ customer_name }}</td>
       </tr>
       <tr>
         <td class="label">Part Name/No.</td>
-        <td class="value"></td>
+        <td class="value">{{ part_name }}</td>
         <td class="label">Hardness</td>
-        <td class="value"></td>
+        <td class="value">{{ hardness }}</td>
       </tr>
       <tr>
         <td class="label">Sample ID No.</td>
-        <td class="value"></td>
+        <td class="value">{{ sample_id }}</td>
         <td class="label">Material Grade</td>
-        <td class="value"></td>
+        <td class="value">{{ material_grade }}</td>
       </tr>
     </table>
 
@@ -197,15 +197,15 @@
         <th>Tempering HRC</th>
       </tr>
       <tr class="blank-row">
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{ size }}</td>
+        <td>{{ hardening_temp }}</td>
+        <td>{{ hardening_speed }}</td>
+        <td>{{ hardening_hrc }}</td>
+        <td>{{ quenching_media }}</td>
+        <td>{{ quenching_temp }}</td>
+        <td>{{ tempering_temp }}</td>
+        <td>{{ tempering_speed }}</td>
+        <td>{{ tempering_hrc }}</td>
       </tr>
     </table>
 

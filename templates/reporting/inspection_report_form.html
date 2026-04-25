@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>Inspection Report</h2>
+  <p class="muted">Fill in the fields below and click Generate PDF. Leave any field blank to keep it empty in the output.</p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div class="card">
+    <h3>Header</h3>
+    {% if form.non_field_errors %}<div class="messages">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="grid">
+      <div>
+        <label>Party (Customer) *</label>
+        {{ form.party }}
+        {{ form.party.errors }}
+      </div>
+      <div>
+        <label>Linked Invoice (optional)</label>
+        {{ form.invoice }}
+        {{ form.invoice.errors }}
+      </div>
+      <div>
+        <label>{{ form.date.label }}</label>
+        {{ form.date }}
+      </div>
+      <div>
+        <label>{{ form.part_name.label }}</label>
+        {{ form.part_name }}
+      </div>
+      <div>
+        <label>{{ form.no.label }}</label>
+        {{ form.no }}
+      </div>
+      <div>
+        <label>{{ form.lot_qty.label }}</label>
+        {{ form.lot_qty }}
+      </div>
+      <div>
+        <label>{{ form.material_grade.label }}</label>
+        {{ form.material_grade }}
+      </div>
+      <div>
+        <label>{{ form.supplier_tc_received.label }}</label>
+        {{ form.supplier_tc_received }}
+      </div>
+      <div>
+        <label>{{ form.process_done.label }}</label>
+        {{ form.process_done }}
+      </div>
+      <div>
+        <label>{{ form.ht.label }}</label>
+        {{ form.ht }}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Inspection Parameters &amp; Observations</h3>
+    <p class="muted">Enter up to 8 observation readings per parameter.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Specification</th>
+          <th>Obs 1</th>
+          <th>Obs 2</th>
+          <th>Obs 3</th>
+          <th>Obs 4</th>
+          <th>Obs 5</th>
+          <th>Obs 6</th>
+          <th>Obs 7</th>
+          <th>Obs 8</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Hardness (Surface)</td>
+          <td>{{ form.hardness_spec }}</td>
+          <td>{{ form.hardness_obs_1 }}</td>
+          <td>{{ form.hardness_obs_2 }}</td>
+          <td>{{ form.hardness_obs_3 }}</td>
+          <td>{{ form.hardness_obs_4 }}</td>
+          <td>{{ form.hardness_obs_5 }}</td>
+          <td>{{ form.hardness_obs_6 }}</td>
+          <td>{{ form.hardness_obs_7 }}</td>
+          <td>{{ form.hardness_obs_8 }}</td>
+        </tr>
+        <tr>
+          <td>Micro-Structure</td>
+          <td>{{ form.micro_structure_spec }}</td>
+          <td>{{ form.micro_structure_obs_1 }}</td>
+          <td>{{ form.micro_structure_obs_2 }}</td>
+          <td>{{ form.micro_structure_obs_3 }}</td>
+          <td>{{ form.micro_structure_obs_4 }}</td>
+          <td>{{ form.micro_structure_obs_5 }}</td>
+          <td>{{ form.micro_structure_obs_6 }}</td>
+          <td>{{ form.micro_structure_obs_7 }}</td>
+          <td>{{ form.micro_structure_obs_8 }}</td>
+        </tr>
+        <tr>
+          <td>Grain Size</td>
+          <td>{{ form.grain_size_spec }}</td>
+          <td>{{ form.grain_size_obs_1 }}</td>
+          <td>{{ form.grain_size_obs_2 }}</td>
+          <td>{{ form.grain_size_obs_3 }}</td>
+          <td>{{ form.grain_size_obs_4 }}</td>
+          <td>{{ form.grain_size_obs_5 }}</td>
+          <td>{{ form.grain_size_obs_6 }}</td>
+          <td>{{ form.grain_size_obs_7 }}</td>
+          <td>{{ form.grain_size_obs_8 }}</td>
+        </tr>
+        <tr>
+          <td>Tensile Strength (MPa)</td>
+          <td>{{ form.tensile_strength_spec }}</td>
+          <td>{{ form.tensile_strength_obs_1 }}</td>
+          <td>{{ form.tensile_strength_obs_2 }}</td>
+          <td>{{ form.tensile_strength_obs_3 }}</td>
+          <td>{{ form.tensile_strength_obs_4 }}</td>
+          <td>{{ form.tensile_strength_obs_5 }}</td>
+          <td>{{ form.tensile_strength_obs_6 }}</td>
+          <td>{{ form.tensile_strength_obs_7 }}</td>
+          <td>{{ form.tensile_strength_obs_8 }}</td>
+        </tr>
+        <tr>
+          <td>Any Other Requirements</td>
+          <td>{{ form.other_requirements_spec }}</td>
+          <td>{{ form.other_obs_1 }}</td>
+          <td>{{ form.other_obs_2 }}</td>
+          <td>{{ form.other_obs_3 }}</td>
+          <td>{{ form.other_obs_4 }}</td>
+          <td>{{ form.other_obs_5 }}</td>
+          <td>{{ form.other_obs_6 }}</td>
+          <td>{{ form.other_obs_7 }}</td>
+          <td>{{ form.other_obs_8 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Bottom</h3>
+    <div class="grid">
+      <div>
+        <label>{{ form.qty_checked.label }}</label>
+        {{ form.qty_checked }}
+      </div>
+      <div>
+        <label>{{ form.qty.label }}</label>
+        {{ form.qty }}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <button type="submit">Generate PDF</button>
+    <a class="button secondary" href="/reports/templates/" style="margin-left:8px;">Cancel</a>
+  </div>
+</form>
+{% endblock %}

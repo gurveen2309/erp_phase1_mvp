@@ -122,19 +122,19 @@
 
   <table class="meta-table">
     <tr>
-      <td class="cell">DATE: <span class="value"></span></td>
-      <td class="cell">PART NAME: <span class="value"></span></td>
-      <td class="cell">CUSTOMER: <span class="value"></span></td>
-      <td class="cell">NO: <span class="value"></span></td>
+      <td class="cell">DATE: <span class="value">{{ date }}</span></td>
+      <td class="cell">ITEM NAME: <span class="value">{{ part_name }}</span></td>
+      <td class="cell">CUSTOMER: <span class="value">{{ customer }}</span></td>
+      <td class="cell">NO: <span class="value">{{ no }}</span></td>
     </tr>
     <tr>
-      <td class="cell">LOT QTY:</td>
-      <td class="cell">MATERIAL GRADE:</td>
-      <td class="cell" colspan="2">SUPPLIER TC RECEIVED OR NOT:</td>
+      <td class="cell">LOT QTY: <span class="value">{{ lot_qty }}</span></td>
+      <td class="cell">MATERIAL GRADE: <span class="value">{{ material_grade }}</span></td>
+      <td class="cell" colspan="2">SUPPLIER TC RECEIVED OR NOT: <span class="value">{{ supplier_tc_received }}</span></td>
     </tr>
     <tr>
-      <td class="cell" colspan="3">PROCESS DONE:</td>
-      <td class="cell">H/T</td>
+      <td class="cell" colspan="3">PROCESS DONE: <span class="value">{{ process_done }}</span></td>
+      <td class="cell">H/T <span class="value">{{ ht }}</span></td>
     </tr>
   </table>
 
@@ -146,55 +146,60 @@
       <th colspan="8">OBSERVATION</th>
     </tr>
     <tr>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
-      <th class="obs-col"></th>
+      <th class="obs-col">1</th>
+      <th class="obs-col">2</th>
+      <th class="obs-col">3</th>
+      <th class="obs-col">4</th>
+      <th class="obs-col">5</th>
+      <th class="obs-col">6</th>
+      <th class="obs-col">7</th>
+      <th class="obs-col">8</th>
     </tr>
     <tr>
       <td>1</td>
       <td><strong>Hardness (Surface)</strong></td>
-      <td style="text-align:center;"></td>
-      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      <td style="text-align:center;">{{ hardness_spec }}</td>
+      <td>{{ hardness_obs_1 }}</td><td>{{ hardness_obs_2 }}</td><td>{{ hardness_obs_3 }}</td><td>{{ hardness_obs_4 }}</td>
+      <td>{{ hardness_obs_5 }}</td><td>{{ hardness_obs_6 }}</td><td>{{ hardness_obs_7 }}</td><td>{{ hardness_obs_8 }}</td>
     </tr>
     <tr>
       <td>2</td>
       <td><strong>Micro-Structure</strong></td>
-      <td></td>
-      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      <td>{{ micro_structure_spec }}</td>
+      <td>{{ micro_structure_obs_1 }}</td><td>{{ micro_structure_obs_2 }}</td><td>{{ micro_structure_obs_3 }}</td><td>{{ micro_structure_obs_4 }}</td>
+      <td>{{ micro_structure_obs_5 }}</td><td>{{ micro_structure_obs_6 }}</td><td>{{ micro_structure_obs_7 }}</td><td>{{ micro_structure_obs_8 }}</td>
     </tr>
     <tr>
       <td>3</td>
       <td><strong>Grain Size</strong></td>
-      <td></td>
-      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      <td>{{ grain_size_spec }}</td>
+      <td>{{ grain_size_obs_1 }}</td><td>{{ grain_size_obs_2 }}</td><td>{{ grain_size_obs_3 }}</td><td>{{ grain_size_obs_4 }}</td>
+      <td>{{ grain_size_obs_5 }}</td><td>{{ grain_size_obs_6 }}</td><td>{{ grain_size_obs_7 }}</td><td>{{ grain_size_obs_8 }}</td>
     </tr>
     <tr>
       <td>4</td>
       <td><strong>Tensile Strength (MPa)</strong></td>
-      <td></td>
-      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      <td>{{ tensile_strength_spec }}</td>
+      <td>{{ tensile_strength_obs_1 }}</td><td>{{ tensile_strength_obs_2 }}</td><td>{{ tensile_strength_obs_3 }}</td><td>{{ tensile_strength_obs_4 }}</td>
+      <td>{{ tensile_strength_obs_5 }}</td><td>{{ tensile_strength_obs_6 }}</td><td>{{ tensile_strength_obs_7 }}</td><td>{{ tensile_strength_obs_8 }}</td>
     </tr>
     <tr>
       <td>5</td>
       <td><strong>Any Other Requirements</strong></td>
-      <td></td>
-      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      <td>{{ other_requirements_spec }}</td>
+      <td>{{ other_obs_1 }}</td><td>{{ other_obs_2 }}</td><td>{{ other_obs_3 }}</td><td>{{ other_obs_4 }}</td>
+      <td>{{ other_obs_5 }}</td><td>{{ other_obs_6 }}</td><td>{{ other_obs_7 }}</td><td>{{ other_obs_8 }}</td>
     </tr>
   </table>
 
   <table class="bottom-table">
     <tr>
       <td style="width:70%;">CHECKED MATERIAL AFTER H/T HARDNESS OK.</td>
-      <td style="width:30%;"><strong>Qty. Checked:</strong></td>
+      <td style="width:30%;"><strong>Qty. Checked:</strong> {{ qty_checked }}</td>
     </tr>
     <tr>
       <td></td>
-      <td><strong>Qty.:</strong></td>
+      <td><strong>Qty.:</strong> {{ qty }}</td>
     </tr>
   </table>
 

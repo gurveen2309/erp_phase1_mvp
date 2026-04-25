@@ -257,15 +257,15 @@ def build_document_receipt_pdf(
     return buffer.getvalue()
 
 
-def build_blank_process_template_pdf() -> bytes:
-    return _render_html_pdf(
-        "reporting/pdf/process_report_template.html",
-        _blank_template_context(),
-    )
+def build_blank_process_template_pdf(extra_context: dict | None = None) -> bytes:
+    ctx = _blank_template_context()
+    if extra_context:
+        ctx.update(extra_context)
+    return _render_html_pdf("reporting/pdf/process_report_template.html", ctx)
 
 
-def build_blank_inspection_template_pdf() -> bytes:
-    return _render_html_pdf(
-        "reporting/pdf/inspection_report_template.html",
-        _blank_template_context(),
-    )
+def build_blank_inspection_template_pdf(extra_context: dict | None = None) -> bytes:
+    ctx = _blank_template_context()
+    if extra_context:
+        ctx.update(extra_context)
+    return _render_html_pdf("reporting/pdf/inspection_report_template.html", ctx)

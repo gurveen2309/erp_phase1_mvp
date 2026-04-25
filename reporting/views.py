@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.files.base import ContentFile
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 
 from finance.models import Invoice
 from finance.services import monthly_invoice_summary, outstanding_summary, party_ledger, production_summary, top_parties
-from production.models import Challan
-from reporting.forms import DateRangeForm, LedgerFilterForm
+from production.models import Challan, InspectionReport, ProcessReport
+from reporting.forms import DateRangeForm, InspectionReportForm, LedgerFilterForm, ProcessReportForm
 from reporting.pdf_exports import (
     build_blank_inspection_template_pdf,
     build_blank_process_template_pdf,
@@ -40,6 +42,117 @@ def blank_inspection_template_pdf_view(request):
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="heat_treatment_inspection_template.pdf"'
     return response
+
+
+def _save_report_pdf(report, pdf_bytes: bytes, prefix: str) -> str:
+    print("Saving report PDF...")
+    report.save()
+    filename = f"{prefix}_{report.party_id}_{timezone.now():%Y%m%d_%H%M%S}.pdf"
+    print("Saving report PDF with filename:", filename)
+    report.pdf.save(filename, ContentFile(pdf_bytes), save=True)
+    report.refresh_from_db()
+    print("Report saved with PDF:", report.pdf.name)
+    return report.pdf.name
+
+
+@staff_member_required
+def process_report_form_view(request):
+    initial = {}
+    invoice_id = request.GET.get("invoice_id")
+    if invoice_id:
+        invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+        initial["party"] = invoice.party_id
+        initial["invoice"] = invoice.pk
+
+    if request.method == "POST":
+        form = ProcessReportForm(request.POST)
+        if form.is_valid():
+            data = dict(form.cleaned_data)
+            party = data.pop("party")
+            invoice = data.pop("invoice", None)
+
+            pdf_ctx = {**data, "customer_name": party.name}
+            pdf_bytes = build_blank_process_template_pdf(extra_context=pdf_ctx)
+
+            report = ProcessReport(
+                party=party,
+                invoice=invoice,
+                generated_by=request.user,
+                **data,
+            )
+            print("*"*100)
+            print("Report data:", data)
+            print("Report:", report)
+            print("PDF BYTES:", pdf_bytes)
+            filename = _save_report_pdf(report, pdf_bytes, "process")
+            print("Saved report PDF with filename:", filename)
+            if invoice:
+                invoice.process_report_pdf.save(filename, ContentFile(pdf_bytes), save=True)
+
+            response = HttpResponse(pdf_bytes, content_type="application/pdf")
+            response["Content-Disposition"] = 'attachment; filename="process_report.pdf"'
+            return response
+    else:
+        form = ProcessReportForm(initial=initial)
+
+    return render(request, "reporting/process_report_form.html", {"form": form})
+
+
+@staff_member_required
+def inspection_report_form_view(request):
+    initial = {}
+    invoice_id = request.GET.get("invoice_id")
+    if invoice_id:
+        invoice = get_object_or_404(Invoice.objects.select_related("party"), pk=invoice_id)
+        initial["party"] = invoice.party_id
+        initial["invoice"] = invoice.pk
+
+    if request.method == "POST":
+        form = InspectionReportForm(request.POST)
+        if form.is_valid():
+            data = dict(form.cleaned_data)
+            party = data.pop("party")
+            invoice = data.pop("invoice", None)
+
+            pdf_ctx = {**data, "customer": party.name}
+            pdf_bytes = build_blank_inspection_template_pdf(extra_context=pdf_ctx)
+
+            report = InspectionReport(
+                party=party,
+                invoice=invoice,
+                generated_by=request.user,
+                **data,
+            )
+            filename = _save_report_pdf(report, pdf_bytes, "inspection")
+            if invoice:
+                invoice.inspection_report_pdf.save(filename, ContentFile(pdf_bytes), save=True)
+
+            response = HttpResponse(pdf_bytes, content_type="application/pdf")
+            response["Content-Disposition"] = 'attachment; filename="inspection_report.pdf"'
+            return response
+    else:
+        form = InspectionReportForm(initial=initial)
+
+    return render(request, "reporting/inspection_report_form.html", {"form": form})
+
+
+@staff_member_required
+def report_history_view(request):
+    party_id = request.GET.get("party")
+    process_qs = ProcessReport.objects.select_related("party", "invoice", "generated_by")
+    inspection_qs = InspectionReport.objects.select_related("party", "invoice", "generated_by")
+    if party_id:
+        process_qs = process_qs.filter(party_id=party_id)
+        inspection_qs = inspection_qs.filter(party_id=party_id)
+
+    rows = []
+    for r in process_qs:
+        rows.append({"kind": "Process", "obj": r})
+    for r in inspection_qs:
+        rows.append({"kind": "Inspection", "obj": r})
+    rows.sort(key=lambda x: x["obj"].generated_at, reverse=True)
+
+    return render(request, "reporting/report_history.html", {"rows": rows})
 
 
 @staff_member_required
