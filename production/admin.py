@@ -133,7 +133,7 @@ class ChallanAdmin(ReceiptAdminMixin, admin.ModelAdmin):
         "weight_kg",
         "amount",
     )
-    list_filter = ("direction", "challan_date", ("party", admin.RelatedOnlyFieldListFilter))
+    list_filter = ("direction", "challan_date", "party")
     search_fields = ("challan_number", "=id", "party__name", "job_description", "job_type")
     autocomplete_fields = ("party",)
 

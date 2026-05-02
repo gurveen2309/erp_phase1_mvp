@@ -1,6 +1,6 @@
 from django.urls import path
 
-from reporting import views
+from reporting import api_views, views
 
 
 app_name = "reporting"
@@ -20,4 +20,9 @@ urlpatterns = [
     path("invoices/<int:invoice_id>/inspection-uploaded.pdf", views.invoice_inspection_uploaded_pdf_view, name="invoice-inspection-uploaded-pdf"),
     path("outstanding/", views.outstanding_summary_view, name="outstanding-summary"),
     path("production/", views.production_dashboard_view, name="production-dashboard"),
+
+    # JSON API endpoints for Next.js dashboard
+    path("api/production/daily/", api_views.production_daily_api, name="api-production-daily"),
+    path("api/production/monthly/", api_views.monthly_summary_api, name="api-monthly-summary"),
+    path("api/production/top-parties/", api_views.top_parties_api, name="api-top-parties"),
 ]

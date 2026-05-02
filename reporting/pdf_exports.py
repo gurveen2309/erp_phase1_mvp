@@ -10,7 +10,10 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, A6
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
-from weasyprint import HTML
+try:
+    from weasyprint import HTML
+except (ImportError, OSError):
+    HTML = None  # WeasyPrint unavailable; PDF features requiring it will fail gracefully
 
 from finance.services import LedgerEntry
 from masters.models import Party

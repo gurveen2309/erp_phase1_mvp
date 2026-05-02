@@ -19,7 +19,7 @@ class OpeningBalanceAdmin(FinanceApprovalAdminMixin, admin.ModelAdmin):
 class InvoiceAdmin(ReceiptAdminMixin, admin.ModelAdmin):
     receipt_url_name = "reporting:invoice-receipt-pdf"
     list_display = ("invoice_date", "invoice_number", "receipt_code_display", "party", "amount")
-    list_filter = ("invoice_date", ("party", admin.RelatedOnlyFieldListFilter))
+    list_filter = ("invoice_date", "party")
     search_fields = ("invoice_number", "=id", "party__name", "remarks")
     autocomplete_fields = ("party",)
     fieldsets = (
@@ -92,6 +92,6 @@ class InvoiceAdmin(ReceiptAdminMixin, admin.ModelAdmin):
 @admin.register(Payment)
 class PaymentAdmin(FinanceApprovalAdminMixin, admin.ModelAdmin):
     list_display = ("payment_date", "party", "amount", "mode", "reference_number")
-    list_filter = ("payment_date", "mode", ("party", admin.RelatedOnlyFieldListFilter))
+    list_filter = ("payment_date", "mode", "party")
     search_fields = ("reference_number", "party__name", "remarks")
     autocomplete_fields = ("party",)
