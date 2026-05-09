@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": null,
+  "createdDate": "2026-05-09",
+  "description": "Link payments to specific invoices to enable settlement tracking. Required before full outstanding balance reconciliation is possible. Currently challans are not linked to invoices either.",
+  "id": "T-007",
+  "order": 20,
+  "phase": "hardening",
+  "status": "open",
+  "title": "Invoice-payment settlement allocation",
+  "type": "feature"
+}

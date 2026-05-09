@@ -1,0 +1,28 @@
+{
+  "blockers": [],
+  "date": "2026-05-09",
+  "phases": [
+    {
+      "description": "Core Django ERP: party master, finance (invoices, payments, opening balances), production (challans), reporting, Excel import pipeline, governance (approvals, audit, backups).",
+      "id": "foundation",
+      "label": "PHASE 1",
+      "name": "Foundation",
+      "summary": "Django monolith — complete"
+    },
+    {
+      "description": "Next.js production analytics dashboard: daily production chart, monthly invoice summary, top parties by revenue. Connects to Django JSON API endpoints at /reports/api/production/.",
+      "id": "dashboard",
+      "label": "PHASE 2",
+      "name": "Dashboard",
+      "summary": "Next.js dashboard — in progress"
+    },
+    {
+      "description": "Automated tests, invoice-payment settlement allocation, richer production model, deployment polish.",
+      "id": "hardening",
+      "label": "PHASE 3",
+      "name": "Hardening",
+      "summary": "Tests + production model + deployment"
+    }
+  ],
+  "title": "erp-phase1-mvp"
+}

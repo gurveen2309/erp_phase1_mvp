@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": null,
+  "createdDate": "2026-05-09",
+  "description": "A Claude Code skill + thin Django management command.\n\nSKILL (.claude/skills/sync-gmail.md):\n/sync-gmail [--days 30] [--dry-run] [--account enterprise|zinc]\n- Uses gmail-enterprise MCP to search HDFC alert emails\n- Extracts: date, amount, direction, reference_number, narration, gmail_message_id\n- Fetches party list from DB, fuzzy-matches narrations (confidence threshold 0.65)\n- Calls stage_gmail_payments management command with structured JSON\n- Reports staged / skipped / unmatched summary table\n\nCOMMAND (finance/management/commands/stage_gmail_payments.py):\n- Pure DB layer, no Gmail logic\n- Deduplicates: skips if Payment.reference_number exists or ApprovalRequest.metadata.gmail_message_id already pending\n- Creates ApprovalRequest per transaction via existing governance.services.create_approval_request()\n- --dry-run and --clear-staged flags\n\nZero new pip dependencies. No changes to existing files.\n\nFull plan at: plans/gmail-payment-sync.md",
+  "id": "T-011",
+  "order": 50,
+  "phase": "hardening",
+  "status": "open",
+  "title": "Gmail → Payment sync: /sync-gmail skill + stage_gmail_payments command",
+  "type": "feature"
+}

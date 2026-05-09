@@ -3,6 +3,8 @@
 .env.*
 !.env.example
 !.env.production.example
+gcp-oauth.keys.json
+gcp-oauth.keys2.json
 
 # Virtual environments
 .venv/

@@ -1,0 +1,20 @@
+{
+  "components": [
+    "dashboard"
+  ],
+  "discoveredDate": "2026-05-09",
+  "id": "ISS-002",
+  "impact": "dashboard/services/api.js falls back to http://127.0.0.1:8000/reports/api when NEXT_PUBLIC_API_URL is unset. No .env.local.example exists to document this. New contributors will hit silent failures with no guidance.",
+  "location": [
+    "dashboard/services/api.js"
+  ],
+  "phase": "dashboard",
+  "relatedTickets": [
+    "T-005"
+  ],
+  "resolution": null,
+  "resolvedDate": null,
+  "severity": "medium",
+  "status": "open",
+  "title": "No .env.local template in dashboard — API base URL silently falls back to hardcoded 127.0.0.1"
+}

@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": null,
+  "createdDate": "2026-05-09",
+  "description": "Write Django tests for the production_dashboard_workbook importer: verify row counts (21 parties, 7 opening balances, 367 invoices, 88 payments, 86 challans), test re-import idempotency (duplicate detection), and test batch rollback via ImportedModelMixin.",
+  "id": "T-006",
+  "order": 10,
+  "phase": "hardening",
+  "status": "open",
+  "title": "Automated tests for workbook import parsing and idempotency",
+  "type": "task"
+}

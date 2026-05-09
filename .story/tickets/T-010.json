@@ -1,0 +1,14 @@
+{
+  "blockedBy": [
+    "T-003"
+  ],
+  "completedDate": null,
+  "createdDate": "2026-05-09",
+  "description": "Consolidate Next.js as the single user-facing frontend for both the public marketing page and analytics dashboard. No new tech stack — Tailwind is already installed.\n\n**Route restructure:**\n- app/page.tsx (current analytics) → app/dashboard/page.tsx\n- app/page.tsx (new) → public marketing homepage\n\n**Marketing page sections:**\n- Navbar: company name + \"Back Office\" button linking to NEXT_PUBLIC_ADMIN_URL\n- Hero: company name, tagline, services intro\n- What We Do: 4 service cards (Heat Treatment, Surface Hardening, Quality Inspection, Production Tracking)\n- Why Choose Us: GST registered, quality, reliability\n- Footer: address, GSTIN\n\n**Env vars to add in .env.local.example:**\nNEXT_PUBLIC_COMPANY_NAME, NEXT_PUBLIC_COMPANY_ADDRESS, NEXT_PUBLIC_COMPANY_GSTIN, NEXT_PUBLIC_ADMIN_URL\n\n**Django: zero changes.** Staff continue using localhost:8000/admin/ for data entry.\n\nFull plan at: plans/website-cover.md",
+  "id": "T-010",
+  "order": 40,
+  "phase": "dashboard",
+  "status": "open",
+  "title": "Add public marketing homepage to Next.js dashboard",
+  "type": "feature"
+}

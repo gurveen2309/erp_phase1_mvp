@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": "2026-05-09",
+  "createdDate": "2026-05-09",
+  "description": "ApprovalRequest queue, AuditEvent trail, BackupSnapshot at /governance/. Roles and permissions via Django groups (bootstrap_roles management command). MaintenanceModeMiddleware.",
+  "id": "T-002",
+  "order": 20,
+  "phase": "foundation",
+  "status": "complete",
+  "title": "Governance module — approvals, audit trail, backups",
+  "type": "feature"
+}

@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": null,
+  "createdDate": "2026-05-09",
+  "description": "Implement two Django management commands that keep the DB and git-committed CSV files in sync — no live auto-sync, two explicit directional pushes.\n\n**export_data** (DB → CSV):\n- Writes data/parties.csv, data/invoices.csv, data/payments.csv, data/challans.csv, data/opening_balances.csv\n- Each CSV has erp_id (DB PK) as first column so future imports can match precisely\n- Column names match DEFAULT_MAPPINGS in migration_app/services.py\n\n**import_data** (CSV → DB):\n- Classifies each row: NEW / UNCHANGED / MODIFIED / CONFLICT / MISSING\n- Matching: by erp_id first, then natural keys (party+invoice_number, party+reference_number, party+challan_number, party+effective_date+balance_type+amount)\n- Dry-run mode shows full report without writing\n- --accept-csv / --accept-db flags for batch conflict resolution\n- --delete-missing to remove DB records absent from CSV (PROTECT FK constraint respected)\n- Commits atomically inside transaction.atomic()\n\n**Makefile targets:** export-data, import-data-dry, import-data\n\n**Reuses from migration_app/services.py:** normalize_date(), normalize_decimal(), normalize_boolean()\n\n**New files:** migration_app/management/commands/export_data.py, migration_app/management/commands/import_data.py, data/*.csv, data/README.md\n\nFull implementation plan at: ~/.claude/plans/okay-i-ll-try-to-moonlit-scroll.md",
+  "id": "T-009",
+  "order": 40,
+  "phase": "hardening",
+  "status": "open",
+  "title": "Build DB ↔ CSV bidirectional data sync (export_data + import_data commands)",
+  "type": "feature"
+}

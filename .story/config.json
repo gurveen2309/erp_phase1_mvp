@@ -1,0 +1,14 @@
+{
+  "features": {
+    "handovers": true,
+    "issues": true,
+    "reviews": true,
+    "roadmap": true,
+    "tickets": true
+  },
+  "language": "python",
+  "project": "erp-phase1-mvp",
+  "schemaVersion": 1,
+  "type": "pip",
+  "version": 2
+}

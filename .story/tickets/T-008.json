@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": "2026-05-09",
+  "createdDate": "2026-05-09",
+  "description": "79 tests across 11 spec files covering every user-facing surface:\n\n**New spec files to add:**\n- home.spec.js — auth redirect guard\n- ledger.spec.js — party select, entries, PDF download, date filters, 400 on missing param\n- outstanding.spec.js — columns, test party appears\n- production_dashboard.spec.js — 3 sections, date filter, empty range message\n- api_endpoints.spec.js — /daily/, /monthly/, /top-parties/ shape + percentage sum + date filter\n- import_workflow.spec.js — upload → preview → confirm → history, session guard\n- governance.spec.js — approval queue, audit log, backup create\n- admin_actions.spec.js — 11 admin list views, download_pdfs + regenerate_pdfs bulk actions, challan/invoice receipt PDFs + 404s\n\n**global-setup.js** — extend to seed challan PW-CH-001, invoice PW-INV-001, payment PW-PAY-001, opening balance, and a ProcessReport for admin action tests.\n\n**global-teardown.js** — extend to clean up all seeded finance records and any MigrationBatch records created during import workflow tests.",
+  "id": "T-008",
+  "order": 30,
+  "phase": "hardening",
+  "status": "complete",
+  "title": "Write Playwright test suite covering all ERP views, APIs, and admin actions",
+  "type": "task"
+}

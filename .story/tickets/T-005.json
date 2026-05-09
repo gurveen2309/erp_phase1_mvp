@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": null,
+  "createdDate": "2026-05-09",
+  "description": "Create dashboard/.env.local.example documenting NEXT_PUBLIC_API_URL so the API base URL is not silently hardcoded to http://127.0.0.1:8000/reports/api. Include in README setup instructions.",
+  "id": "T-005",
+  "order": 30,
+  "phase": "dashboard",
+  "status": "open",
+  "title": "Add .env.local.example for dashboard config",
+  "type": "chore"
+}

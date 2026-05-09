@@ -1,0 +1,12 @@
+{
+  "blockedBy": [],
+  "completedDate": "2026-05-09",
+  "createdDate": "2026-05-09",
+  "description": "Six Django apps: masters (Party), production (Challan), finance (OpeningBalance, Invoice, Payment), reporting (ledger, outstanding, production views + PDF exports), migration_app (Excel import pipeline with per-batch rollback), governance (approvals, audit, backups). Docker + PostgreSQL deployment via docker-compose.",
+  "id": "T-001",
+  "order": 10,
+  "phase": "foundation",
+  "status": "complete",
+  "title": "Django ERP core — parties, finance, production, reporting, imports",
+  "type": "feature"
+}

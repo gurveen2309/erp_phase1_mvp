@@ -1,0 +1,22 @@
+{
+  "components": [
+    "dashboard",
+    "reporting"
+  ],
+  "discoveredDate": "2026-05-09",
+  "id": "ISS-001",
+  "impact": "Browsing the Next.js dev server at http://127.0.0.1:3000 causes all API calls to fail with CORS errors since Django only allows the origin http://localhost:3000. The two configs point at different hostnames.",
+  "location": [
+    "dashboard/next.config.ts",
+    "config/settings.py"
+  ],
+  "phase": "dashboard",
+  "relatedTickets": [
+    "T-003"
+  ],
+  "resolution": null,
+  "resolvedDate": null,
+  "severity": "high",
+  "status": "open",
+  "title": "Dashboard CORS mismatch: allowedDevOrigins uses 127.0.0.1, Django CORS allows localhost only"
+}
