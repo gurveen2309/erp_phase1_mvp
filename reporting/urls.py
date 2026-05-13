@@ -12,6 +12,7 @@ urlpatterns = [
     path("history/", views.report_history_view, name="report-history"),
     path("templates/process.pdf", views.blank_process_template_pdf_view, name="blank-process-template-pdf"),
     path("templates/inspection.pdf", views.blank_inspection_template_pdf_view, name="blank-inspection-template-pdf"),
+    path("templates/daily-production.pdf", views.blank_daily_production_report_pdf_view, name="blank-daily-production-report-pdf"),
     path("ledger/", views.party_ledger_view, name="party-ledger"),
     path("ledger/pdf/", views.party_ledger_pdf_view, name="party-ledger-pdf"),
     path("challans/<int:challan_id>/receipt.pdf", views.challan_receipt_pdf_view, name="challan-receipt-pdf"),

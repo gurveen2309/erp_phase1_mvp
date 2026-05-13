@@ -20,6 +20,7 @@ from reporting.forms import (
     ReportForm,
 )
 from reporting.pdf_exports import (
+    build_blank_daily_production_report_pdf,
     build_blank_inspection_template_pdf,
     build_blank_process_template_pdf,
     build_document_receipt_pdf,
@@ -50,6 +51,14 @@ def blank_inspection_template_pdf_view(request):
     pdf_bytes = build_blank_inspection_template_pdf()
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="heat_treatment_inspection_template.pdf"'
+    return response
+
+
+@staff_member_required
+def blank_daily_production_report_pdf_view(request):
+    pdf_bytes = build_blank_daily_production_report_pdf()
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="daily_production_report_template.pdf"'
     return response
 
 

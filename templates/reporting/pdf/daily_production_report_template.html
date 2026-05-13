@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 14mm 12mm 14mm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #111;
+      margin: 0;
+    }
+    .page {
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .header-box,
+    .meta-table,
+    .production-table {
+      margin-bottom: 12px;
+    }
+    .header-box td,
+    .meta-table td,
+    .production-table th,
+    .production-table td {
+      border: 1px solid #111;
+      padding: 6px 7px;
+      vertical-align: middle;
+    }
+    .brand {
+      text-align: center;
+      padding: 10px 12px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.05;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .brand .address {
+      margin-top: 6px;
+      font-size: 10px;
+      line-height: 1.35;
+    }
+    .report-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 8px 0 12px;
+      text-transform: uppercase;
+    }
+    .meta-table td {
+      width: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      height: 24px;
+    }
+    .meta-table .right {
+      text-align: right;
+    }
+    .blank-line {
+      display: inline-block;
+      border-bottom: 1px solid #111;
+      width: 48mm;
+      height: 10px;
+      vertical-align: baseline;
+    }
+    .production-table th {
+      text-align: center;
+      font-weight: 700;
+    }
+    .production-table td {
+      height: 44px;
+    }
+    .serial-col {
+      width: 8%;
+      text-align: center;
+    }
+    .weight-col { width: 12%; }
+    .item-col { width: 18%; }
+    .party-col { width: 22%; }
+    .time-col { width: 11%; }
+    .hrc-col { width: 8%; }
+    .signature {
+      bottom: 0;
+      position: fixed;
+      right: 0;
+      width: 42%;
+      font-weight: 700;
+      text-align: left;
+    }
+    .signature-line {
+      margin-top: 30px;
+      border-top: 1px solid #111;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <table class="header-box">
+      <tr>
+        <td class="brand">
+          <h1>{{ company_name }}</h1>
+          {% if company_address_lines %}
+            <div class="address">
+              {% for line in company_address_lines %}
+                <div>{{ line }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if company_gstin %}
+            <div class="address">GSTIN: {{ company_gstin }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <div class="report-title">Daily Production Report</div>
+
+    <table class="meta-table">
+      <tr>
+        <td>Date: <span class="blank-line"></span></td>
+        <td class="right">Machine Type: <span class="blank-line"></span></td>
+      </tr>
+    </table>
+
+    <table class="production-table">
+      <tr>
+        <th class="serial-col">S/No.</th>
+        <th class="weight-col">Weight</th>
+        <th class="item-col">Item</th>
+        <th class="party-col">Party Name</th>
+        <th class="time-col">In Time</th>
+        <th class="time-col">Heat Time</th>
+        <th class="time-col">Out Time</th>
+        <th class="hrc-col">HRC</th>
+      </tr>
+      {% for row_number in row_numbers %}
+        <tr>
+          <td class="serial-col">{{ row_number }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      {% endfor %}
+    </table>
+
+    <div class="signature">
+      Signature
+      <div class="signature-line"></div>
+    </div>
+  </div>
+</body>
+</html>
