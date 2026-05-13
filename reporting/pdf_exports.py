@@ -276,5 +276,5 @@ def build_blank_inspection_template_pdf(extra_context: dict | None = None) -> by
 
 def build_blank_daily_production_report_pdf() -> bytes:
     ctx = _blank_template_context()
-    ctx["row_numbers"] = range(1, 6)
+    ctx["row_numbers"] = range(1, 13)
     return _render_html_pdf("reporting/pdf/daily_production_report_template.html", ctx)
