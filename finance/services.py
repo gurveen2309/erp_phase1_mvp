@@ -158,9 +158,19 @@ def monthly_invoice_summary():
     )
 
 
-def top_parties(limit: int = 10):
+def top_parties(
+    limit: int = 10,
+    start_date: date | None = None,
+    end_date: date | None = None,
+):
+    invoices = Invoice.objects.all()
+    if start_date:
+        invoices = invoices.filter(invoice_date__gte=start_date)
+    if end_date:
+        invoices = invoices.filter(invoice_date__lte=end_date)
+
     return (
-        Invoice.objects.values("party__name")
+        invoices.values("party__name")
         .annotate(total_amount=Coalesce(Sum("amount"), ZERO))
         .order_by("-total_amount", "party__name")[:limit]
     )

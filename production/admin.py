@@ -136,6 +136,25 @@ class ChallanAdmin(ReceiptAdminMixin, admin.ModelAdmin):
     list_filter = ("direction", "challan_date", "party")
     search_fields = ("challan_number", "=id", "party__name", "job_description", "job_type")
     autocomplete_fields = ("party",)
+    actions = ["copy_to_invoice"]
+
+    @admin.action(description="Copy to Invoice(s)")
+    def copy_to_invoice(self, request, queryset):
+        from finance.models import Invoice
+        count = 0
+        for challan in queryset:
+            ref = challan.challan_number or challan.pk
+            remarks = f"Challan #{ref} | {challan.weight_kg}kg"
+            if challan.remarks:
+                remarks += f". {challan.remarks}"
+            Invoice.objects.create(
+                party=challan.party,
+                invoice_date=challan.challan_date,
+                amount=challan.amount,
+                remarks=remarks,
+            )
+            count += 1
+        self.message_user(request, f"Created {count} invoice(s).")
 
 
 @admin.register(ProcessReport)

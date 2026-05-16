@@ -34,7 +34,10 @@ def monthly_summary_api(request):
 
 
 def top_parties_api(request):
-    rows = top_parties()
+    rows = top_parties(
+        start_date=request.GET.get("start_date"),
+        end_date=request.GET.get("end_date"),
+    )
     data = [
         {
             "party_name": row["party__name"],

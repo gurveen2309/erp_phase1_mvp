@@ -254,10 +254,14 @@ def outstanding_summary_view(request):
 def production_dashboard_view(request):
     form = DateRangeForm(request.GET or None)
     daily_rows = []
+    start_date = None
+    end_date = None
     if form.is_valid():
+        start_date = form.cleaned_data.get("start_date")
+        end_date = form.cleaned_data.get("end_date")
         daily_rows = production_summary(
-            start_date=form.cleaned_data.get("start_date"),
-            end_date=form.cleaned_data.get("end_date"),
+            start_date=start_date,
+            end_date=end_date,
         )
     return render(
         request,
@@ -266,6 +270,6 @@ def production_dashboard_view(request):
             "form": form,
             "daily_rows": daily_rows,
             "monthly_rows": monthly_invoice_summary(),
-            "top_party_rows": top_parties(),
+            "top_party_rows": top_parties(start_date=start_date, end_date=end_date),
         },
     )
