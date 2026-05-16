@@ -2,13 +2,13 @@
   "blockedBy": [
     "T-003"
   ],
-  "completedDate": null,
+  "completedDate": "2026-05-16",
   "createdDate": "2026-05-09",
   "description": "Wire the Next.js dashboard into docker-compose.yml as a separate service so `make run` starts both the Django backend and the Next.js dev server together. Dashboard should be accessible at localhost:3000, backend at localhost:8000.",
   "id": "T-004",
   "order": 20,
   "phase": "dashboard",
-  "status": "open",
+  "status": "complete",
   "title": "Add dashboard service to docker-compose",
   "type": "task"
 }

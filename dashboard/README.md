@@ -2,19 +2,29 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### With Docker (recommended)
+
+From the project root, `make run` starts both the Django backend and this dashboard:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+make build  # first time only
+make run
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dashboard → http://localhost:3000  
+Django backend → http://localhost:8000
+
+### Local development (without Docker)
+
+```bash
+cp .env.local.example .env.local
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+`NEXT_PUBLIC_API_URL` controls which Django backend the dashboard talks to. The default (`http://localhost:8000/reports/api`) assumes Django is running on port 8000.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

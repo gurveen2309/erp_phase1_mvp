@@ -1,12 +1,12 @@
 {
   "blockedBy": [],
-  "completedDate": null,
+  "completedDate": "2026-05-16",
   "createdDate": "2026-05-09",
   "description": "Django CORS_ALLOWED_ORIGINS only has localhost:3000, but next.config.ts allowedDevOrigins has 127.0.0.1. If dev server is accessed at 127.0.0.1:3000, API calls fail CORS. Align both to the same host, and ensure the API base URL in services/api.js matches. Also confirm the 3 JSON endpoints (/reports/api/production/daily/, /monthly/, /top-parties/) return data when Django is running.",
   "id": "T-003",
   "order": 10,
   "phase": "dashboard",
-  "status": "inprogress",
+  "status": "complete",
   "title": "Fix dashboard CORS and API connectivity",
   "type": "task"
 }

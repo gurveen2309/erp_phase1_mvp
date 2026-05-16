@@ -24,5 +24,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  dashboard:
+    build: ./dashboard
+    command: npx next dev -H 0.0.0.0
+    volumes:
+      - ./dashboard:/app
+      - dashboard_node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/reports/api
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - web
+
 volumes:
   postgres_data:
+  dashboard_node_modules:
