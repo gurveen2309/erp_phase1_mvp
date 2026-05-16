@@ -7,6 +7,6 @@
   "order": 20,
   "phase": "hardening",
   "status": "open",
-  "title": "Invoice-payment settlement allocation",
+  "title": "Invoice-payment settlement allocation [out of scope]",
   "type": "feature"
 }
