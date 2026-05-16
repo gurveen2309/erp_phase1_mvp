@@ -13,11 +13,11 @@
 <div class="grid">
   <div class="card">
     <h3>Before</h3>
-    <pre>{{ approval_request.before_snapshot }}</pre>
+    <pre style="white-space:pre-wrap;overflow-wrap:break-word;margin:0">{{ before_json }}</pre>
   </div>
   <div class="card">
     <h3>After</h3>
-    <pre>{{ approval_request.after_snapshot }}</pre>
+    <pre style="white-space:pre-wrap;overflow-wrap:break-word;margin:0">{{ after_json }}</pre>
   </div>
 </div>
 
@@ -29,6 +29,13 @@
     {{ form.as_p }}
     <button type="submit" name="action" value="approve">Approve</button>
     <button type="submit" name="action" value="reject" class="secondary">Reject</button>
+  </form>
+</div>
+{% elif approval_request.status == "rejected" %}
+<div class="card">
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" name="action" value="requeue">Move back to Review</button>
   </form>
 </div>
 {% endif %}

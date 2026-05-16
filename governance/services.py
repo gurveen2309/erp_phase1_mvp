@@ -129,6 +129,24 @@ def create_approval_request(
     return request_obj
 
 
+def requeue_approval_request(request_obj: ApprovalRequest, actor) -> ApprovalRequest:
+    request_obj.status = ApprovalRequest.Status.PENDING
+    request_obj.approved_by = None
+    request_obj.rejected_at = None
+    request_obj.comments = ""
+    request_obj.save(update_fields=["status", "approved_by", "rejected_at", "comments", "updated_at"])
+    log_audit(
+        "approval.requeued",
+        actor=actor,
+        approval_request=request_obj,
+        before_snapshot=request_obj.before_snapshot,
+        after_snapshot=request_obj.after_snapshot,
+        content_type=request_obj.content_type,
+        object_id=request_obj.object_id,
+    )
+    return request_obj
+
+
 def reject_approval_request(request_obj: ApprovalRequest, actor, comments: str = "") -> ApprovalRequest:
     request_obj.status = ApprovalRequest.Status.REJECTED
     request_obj.approved_by = actor if getattr(actor, "is_authenticated", False) else None

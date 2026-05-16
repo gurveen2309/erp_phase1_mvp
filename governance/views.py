@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
@@ -7,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from governance.forms import ApprovalDecisionForm, BackupCreateForm, RestoreBackupForm
 from governance.models import ApprovalRequest, AuditEvent, BackupSnapshot
-from governance.services import create_backup_snapshot, execute_approval_request, reject_approval_request, restore_backup_snapshot
+from governance.services import create_backup_snapshot, execute_approval_request, reject_approval_request, requeue_approval_request, restore_backup_snapshot
 
 
 @staff_member_required
@@ -28,15 +30,20 @@ def approval_queue_view(request):
 def approval_detail_view(request, request_id: int):
     approval_request = get_object_or_404(ApprovalRequest, pk=request_id)
     form = ApprovalDecisionForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST":
         action = request.POST.get("action")
-        if action == "approve":
-            execute_approval_request(approval_request, request.user, comments=form.cleaned_data["comments"])
-            messages.success(request, "Approval request executed.")
-        elif action == "reject":
-            reject_approval_request(approval_request, request.user, comments=form.cleaned_data["comments"])
-            messages.success(request, "Approval request rejected.")
-        return redirect("governance:approval-queue")
+        if action == "requeue":
+            requeue_approval_request(approval_request, request.user)
+            messages.success(request, "Approval request moved back to pending.")
+            return redirect("governance:approval-queue")
+        if form.is_valid():
+            if action == "approve":
+                execute_approval_request(approval_request, request.user, comments=form.cleaned_data["comments"])
+                messages.success(request, "Approval request executed.")
+            elif action == "reject":
+                reject_approval_request(approval_request, request.user, comments=form.cleaned_data["comments"])
+                messages.success(request, "Approval request rejected.")
+            return redirect("governance:approval-queue")
 
     return render(
         request,
@@ -44,6 +51,8 @@ def approval_detail_view(request, request_id: int):
         {
             "approval_request": approval_request,
             "form": form,
+            "before_json": json.dumps(approval_request.before_snapshot, indent=2, ensure_ascii=False),
+            "after_json": json.dumps(approval_request.after_snapshot, indent=2, ensure_ascii=False),
         },
     )
 

@@ -1,4 +1,7 @@
+import json
+
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from governance.models import ApprovalRequest, AuditEvent, BackupSnapshot
 
@@ -14,7 +17,7 @@ class ApprovalRequestAdmin(admin.ModelAdmin):
         "submitted_by",
         "approved_by",
         "before_snapshot",
-        "after_snapshot",
+        "pretty_after_snapshot",
         "metadata",
         "reason",
         "comments",
@@ -26,6 +29,11 @@ class ApprovalRequestAdmin(admin.ModelAdmin):
         "executed_at",
         "execution_error",
     )
+
+    @admin.display(description="After snapshot")
+    def pretty_after_snapshot(self, obj):
+        formatted = json.dumps(obj.after_snapshot, indent=2, ensure_ascii=False)
+        return mark_safe(f"<pre style='white-space:pre-wrap;margin:0'>{formatted}</pre>")
 
     def has_add_permission(self, request):
         return False
